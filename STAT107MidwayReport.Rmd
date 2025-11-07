@@ -8,6 +8,11 @@ date: "2025-11-06"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+source("00_requirements.R")
+search()
+
+```
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
@@ -16,10 +21,10 @@ To begin, this report was made in conjunction with Tiffany Huang, Shafin Kazi, a
 
 We first begin by loading the data in a readable format.
 ```{r}
-library(readr)
-database_24_25 <- read_csv("C:/Users/drekk/Downloads/database_24_25.csv")
-View(database_24_25)
-summary(database_24_25)
+database_24_25 <- read_csv("database_24_25.csv")
+#View(database_24_25)
+#summary(database_24_25)
+head(database_24_25)
 ```
 
 As the data appears to be complete but not sorted, cleaning does not appear to be necessary, however we will apply sorting as a code to run. Additionally, our focus is primarily on a team's wins, and their 3-point shooting percentage as of right now. We can remove all other data except for those mentioned above and their raw data.
