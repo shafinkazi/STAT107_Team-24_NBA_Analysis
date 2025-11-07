@@ -29,14 +29,14 @@ head(database_24_25)
 
 As the data appears to be complete but not sorted, cleaning does not appear to be necessary, however we will apply sorting as a code to run. Additionally, our focus is primarily on a team's wins, and their 3-point shooting percentage as of right now. We can remove all other data except for those mentioned above and their raw data.
 ```{r}
-team_summary <- database_24_25
-  group_by(Tm)
+team_summary <- database_24_25 %>%
+  group_by(Tm) %>%
   summarise(
     avg_3P_pct = mean(`3P%`, na.rm = TRUE),
     total_games = n_distinct(Data),
     wins = sum(Res == "W"),
     losses = sum(Res == "L")
-  )
+  ) %>%
   arrange(desc(avg_3P_pct))
 
 print(team_summary)
