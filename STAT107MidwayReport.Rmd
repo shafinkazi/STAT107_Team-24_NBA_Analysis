@@ -19,6 +19,8 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 To begin, this report was made in conjunction with Tiffany Huang, Shafin Kazi, and Derek De Gracia for STAT107 at UCR taught by Jose Sanchez Gomez This project explores the statistical relationship between NBA team success (wins) and three-point shooting performance (3P%) for the 2024–2025 NBA season. Our research question is "Do NBA teams with higher 3-point shooting percentages (3P%) tend to win more games during the 2024–25 season?"
 
+The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
+
 Abstract:
 The purpose of this project is to explore whether there is a significant relationship between three-point shooting efficiency and overall team success in the National Basketball Association (NBA) during the 2024–2025 season. Using publicly available team statistics on Kaggle, we computed each team’s average three-point percentage (3P%) and total number of wins as of the current season. Our preliminary analysis summarizes team-level averages and investigates the correlation between shooting accuracy from beyond the arc and total wins. This study is motivated by the modern NBA’s growing reliance on perimeter shooting as a defining characteristic of team performance. By employing linear regression, significance testing, and visualization methods, we aim to determine whether higher three-point efficiency statistically predicts greater team success. These results may provide insight into how shooting efficiency continues to shape competitive dynamics in professional basketball.
 
