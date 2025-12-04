@@ -1,6 +1,6 @@
 ---
 title: "STAT 107 Final Project: NBA Team Statistics and Winning"
-author: "Team 24: Shafin Kazi, [Name], [Name]"
+author: "Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong"
 date: "Due: 2025-12-05"
 output:
   pdf_document: default
@@ -15,7 +15,7 @@ source("00_requirements.R")
 search()
 
 ```
-To begin, this report was made in conjunction with Tiffany Huang, Shafin Kazi, and Derek De Gracia for STAT107 at UCR taught by Jose Sanchez Gomez. 
+To begin, this report was made in conjunction with Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong for STAT107 at UCR taught by Jose Sanchez Gomez. 
 
 The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
 
@@ -105,7 +105,7 @@ team_season <- team_game %>%
 ```
 
 
-## 3. Exploratory Data Analysis
+## 3. Exploratory Data Analysis (Tiffany)
 
 ```{r}
 #Offensive Statistics
@@ -155,7 +155,7 @@ plot(team_summary$avg_3P_pct, team_summary$total_stl,
 ```
 
 
-## 6. Logistic Regression
+## 6. Logistic Regression (Tiffany)
 
 ```{r}
 
