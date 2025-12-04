@@ -1,29 +1,47 @@
+---
+title: "STAT107 Final Report"
+output: html_document
+date: "2025-12-05"
+---
+
+To begin, this report was made in conjunction with Tiffany Huang, Shafin Kazi, and Derek De Gracia for STAT107 at UCR taught by Jose Sanchez Gomez. This project explores the statistical relationship between NBA team success (wins) and three-point shooting performance (3P%) for the 2024–2025 NBA season. Our research question is "Do NBA teams with higher 3-point shooting percentages (3P%) tend to win more games during the 2024–25 season?"
+
+The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
+
+Abstract:
+The purpose of this project is to explore whether there is a significant relationship between three-point shooting efficiency and overall team success in the National Basketball Association (NBA) during the 2024–2025 season. Using publicly available team statistics on Kaggle, we computed each team’s average three-point percentage (3P%) and total number of wins as of the current season. Our preliminary analysis summarizes team-level averages and investigates the correlation between shooting accuracy from beyond the arc and total wins. This study is motivated by the modern NBA’s growing reliance on perimeter shooting as a defining characteristic of team performance. By employing linear regression, significance testing, and visualization methods, we aim to determine whether higher three-point efficiency statistically predicts greater team success. These results may provide insight into how shooting efficiency continues to shape competitive dynamics in professional basketball.
+
+Introduction:
+Historically, professional basketball has been transofmred by an analytical approach to efficiency and competition. Teams such as the Golden State Warriors and Houston Rockets have demonstrated that success in the NBA can greatly depend on these statistics as they maximize shooting effiency and percentage. Coaches and analysts have turned to these tools to help quantify the impact of three-point shots on performance on overall team outcomes. 
+
+Following the abstract, the objective of this project is to examine the nature of how team statistics affect their winning rates and more explicitly, whether or not having a higher 3-pt percentage rate helps teams achieve greater success during the 2024-2025 NBA season. By utilizing public data and aggregating them at a team level to compute seasonal averages it allows analysts and enthusiaists to clearly compare NBA teams and their statistics.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
-# include other necessary libraries
+#Include other necessary libraries
 source("00_requirements.R")
 search()
 ```
-We first begin by loading the data in a readable format.
+We first begin by loading the data in a readable format by using read_csv() and viewing it with head().
 ```{r}
-# read in the dataset
+#Read in the dataset
 database_24_25 <- read_csv("database_24_25.csv")
 #View(database_24_25)
 #summary(database_24_25)
 head(database_24_25)
 ```
+We follow this by summarizing with group_by() followed with pipe operators, then summing the wins and losses of each team, their average 3P% and FG% with sum(), we then order them by the amount of wins by arrange(desc()) and using print() to print out the team summary.
 ```{r}
-# Shafin edited by derek
-# team summary is a dataset of every team and the stats we are interested in researching
-# we are using 
-# 3 Point Percentage
-# Field Goal Percentage
-# Total Free Throws Made
-# Total Steals
-# Total Blocks
+# Shafin edited by Derek; Tiffany
+#Team summary is a dataset of every team and the stats we are interested in researching
+#We are using:
+#3 Point Percentage
+#Field Goal Percentage
+#Total Free Throws Made
+#Total Steals
+#Total Blocks
 team_summary <- database_24_25 %>%
   group_by(Tm) %>%
   summarise(
@@ -46,15 +64,15 @@ print(team_summary)
 names(team_summary)
 ```
 ```{r}
-# Derek
-# Clustering teams by defensive AND offensive stats
+#Derek
+#Clustering teams by defensive AND offensive stats
 team_scaled <- scale(
   team_summary[, c("avg_3P_pct", 
                    "avg_FG_pct", 
                    "total_ft",
                    "total_stl", 
                    "total_blocks")])
-# summary(team_scaled)
+#summary(team_scaled)
 set.seed(800)
 kmeans_result <- kmeans(team_scaled, centers = 3)
 
@@ -74,7 +92,14 @@ plot(team_summary$avg_3P_pct, team_summary$total_stl,
 ```
 
 ```{r}
-# Compare average 3P% between winning and losing teams
+#Tiffany 
+#Compare average 3P% between winning and losing teams
 t_test_result <- t.test(team_summary$avg_3P_pct, team_summary$wins, data = team_summary)
 print(t_test_result)
 ```
+
+Team Contributions by individual:
+Derek:
+Shafin:
+Tiffany:
+Tyler:
