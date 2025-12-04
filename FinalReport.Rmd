@@ -1,1 +1,80 @@
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+# include other necessary libraries
+source("00_requirements.R")
+search()
+```
+We first begin by loading the data in a readable format.
+```{r}
+# read in the dataset
+database_24_25 <- read_csv("database_24_25.csv")
+#View(database_24_25)
+#summary(database_24_25)
+head(database_24_25)
+```
+```{r}
+# Shafin edited by derek
+# team summary is a dataset of every team and the stats we are interested in researching
+# we are using 
+# 3 Point Percentage
+# Field Goal Percentage
+# Total Free Throws Made
+# Total Steals
+# Total Blocks
+team_summary <- database_24_25 %>%
+  group_by(Tm) %>%
+  summarise(
+    wins = sum(Res == "W"), # wins
+    losses = sum(Res == "L"), # losses
+    # offensive stats
+    avg_3P_pct = mean(`3P%`, na.rm = TRUE), # add avg 3P%
+    avg_FG_pct = mean(`FG%`, na.rm = TRUE),  # add avg FG%
+    total_ft = sum(`FT`, na.rm = TRUE), # add total FT
+    # defensive stats
+    total_stl = sum(`STL`, na.rm = TRUE), # add total steals
+    total_blocks = sum(`BLK`, na.rm = TRUE), # add total blocks
+    total_games = n_distinct(Data), # total games played
+  ) %>%
+  arrange(desc(wins)) # order by wins
+
+print(team_summary)
+```
+```{r}
+names(team_summary)
+```
+```{r}
+# Derek
+# Clustering teams by defensive AND offensive stats
+team_scaled <- scale(
+  team_summary[, c("avg_3P_pct", 
+                   "avg_FG_pct", 
+                   "total_ft",
+                   "total_stl", 
+                   "total_blocks")])
+# summary(team_scaled)
+set.seed(800)
+kmeans_result <- kmeans(team_scaled, centers = 3)
+
+team_summary$cluster <- kmeans_result$cluster
+```
+```{r}
+nba_model <- lm(wins ~ avg_3P_pct + avg_FG_pct + total_ft + 
+                total_stl + total_blocks, data = team_summary)
+summary(nba_model)
+
+plot(team_summary$avg_3P_pct, team_summary$total_stl,
+     col = team_summary$cluster,
+     pch = 19,
+     xlab = "Average 3 Pointer Percentage",
+     ylab = "Total Steals",
+     main = "3P% and Steals by Team Type")
+```
+
+```{r}
+# Compare average 3P% between winning and losing teams
+t_test_result <- t.test(team_summary$avg_3P_pct, team_summary$wins, data = team_summary)
+print(t_test_result)
+```
