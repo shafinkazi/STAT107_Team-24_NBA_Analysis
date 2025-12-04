@@ -158,6 +158,20 @@ plot(team_summary$avg_3P_pct, team_summary$total_stl,
 ## 6. Logistic Regression (Tiffany)
 
 ```{r}
+#LOGISTIC REGRESSION MODEL
 
+#Convert results to binary outcome: 1 = Win, 0 = Loss
+team_game <- team_game %>%
+  mutate(win_binary = ifelse(Res == "W", 1, 0))
+
+# Fit logistic regression predicting win/loss
+logit_model <- glm(
+  win_binary ~ FG_pct + `3P_pct` + FT + STL + BLK + defensive_pressure + points,
+  data = team_game,
+  family = binomial
+)
+
+# Display model summary
+summary(logit_model)
 ```
 
