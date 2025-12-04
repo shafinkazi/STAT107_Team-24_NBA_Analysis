@@ -55,6 +55,54 @@ head(raw_database_24_25)
 
 ```
 
+```{r}
+# TEAM-GAME
+
+team_game <- raw_database_24_25 %>%
+  group_by(Data, Tm, Opp, Res) %>%  
+  summarise(
+    FG = sum(FG, na.rm = TRUE),
+    FGA = sum(FGA, na.rm = TRUE),
+    FG_pct = FG / FGA,
+    
+    `3P` = sum(`3P`, na.rm = TRUE),
+    `3PA` = sum(`3PA`, na.rm = TRUE),
+    `3P_pct` = `3P` / `3PA`,
+    
+    FT = sum(FT, na.rm = TRUE),
+    STL = sum(STL, na.rm = TRUE),
+    BLK = sum(BLK, na.rm = TRUE),
+    
+    defensive_pressure = STL + BLK,
+    points = sum(PTS, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+
+```
+
+```{r}
+head(team_game)
+```
+```{r}
+# TEAM-SEASON
+
+team_season <- team_game %>%
+  group_by(Tm) %>%
+  summarise(
+    wins = sum(Res == "W"),
+    losses = sum(Res == "L"),
+    avg_FG_pct = mean(FG_pct, na.rm = TRUE),
+    avg_3P_pct = mean(`3P_pct`, na.rm = TRUE),
+    total_ft = sum(FT, na.rm = TRUE),
+    total_stl = sum(STL, na.rm = TRUE),
+    total_blk = sum(BLK, na.rm = TRUE),
+    avg_def_pressure = mean(defensive_pressure, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+```
 
 
 ## 3. Exploratory Data Analysis
@@ -71,7 +119,7 @@ head(raw_database_24_25)
 ```
 
 
-## 4. Two-Sample T-Tests (Shafin)
+## 4. T-Tests (Shafin)
 
 ```{r}
 
@@ -81,7 +129,29 @@ head(raw_database_24_25)
 ## 5. K-Clustering (Derek)
 
 ```{r}
+team_scaled <- scale(
+  team_summary[, c("avg_3P_pct", 
+                   "avg_FG_pct", 
+                   "total_ft",
+                   "total_stl", 
+                   "total_blocks")])
+#summary(team_scaled)
+set.seed(800)
+kmeans_result <- kmeans(team_scaled, centers = 3)
 
+team_summary$cluster <- kmeans_result$cluster
+```
+```{r}
+nba_model <- lm(wins ~ avg_3P_pct + avg_FG_pct + total_ft + 
+                total_stl + total_blocks, data = team_summary)
+summary(nba_model)
+
+plot(team_summary$avg_3P_pct, team_summary$total_stl,
+     col = team_summary$cluster,
+     pch = 19,
+     xlab = "Average 3 Pointer Percentage",
+     ylab = "Total Steals",
+     main = "3P% and Steals by Team Type")
 ```
 
 
