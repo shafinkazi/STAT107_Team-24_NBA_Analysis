@@ -154,7 +154,6 @@ plot(team_summary$avg_3P_pct, team_summary$total_stl,
      main = "3P% and Steals by Team Type")
 ```
 
-
 ## 6. Logistic Regression (Tiffany)
 
 ```{r}
@@ -174,4 +173,49 @@ logit_model <- glm(
 # Display model summary
 summary(logit_model)
 ```
+## 7. Goodness of Fit Tests (Tiffany)
+```{r}
+### GOODNESS OF FIT TESTS FOR LOGISTIC REGRESSION ###
 
+# 1. Likelihood Ratio Test (compare model vs null model)
+null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
+anova(null_model, logit_model, test = "Chisq")
+
+# 2. Hosmer–Lemeshow Test (requires ResourceSelection package)
+if(!require(ResourceSelection)) install.packages("ResourceSelection")
+library(ResourceSelection)
+
+hoslem.test(team_game$win_binary, fitted(logit_model), g = 10)
+
+# 3. Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
+if(!require(pscl)) install.packages("pscl")
+library(pscl)
+
+pR2(logit_model)
+
+# 4. Classification Accuracy and Confusion Matrix
+pred_prob <- predict(logit_model, type = "response")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+
+conf_matrix <- table(
+  Actual = team_game$win_binary,
+  Predicted = pred_class
+)
+conf_matrix
+
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+accuracy
+
+# 5. ROC Curve and AUC
+if(!require(pROC)) install.packages("pROC")
+library(pROC)
+
+roc_obj <- roc(team_game$win_binary, pred_prob)
+plot(roc_obj, main = "ROC Curve — Logistic Regression Model")
+auc(roc_obj)
+
+# 6. Brier Score
+brier_score <- mean((team_game$win_binary - pred_prob)^2)
+brier_score
+
+```
