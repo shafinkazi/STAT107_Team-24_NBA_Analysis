@@ -130,10 +130,26 @@ team_season <- team_game %>%
 ## 4. T-Tests (Shafin)
 
 ```{r}
+# 3-Point Percentage (Offensive Efficiency)
+
+# H0:There is no difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+# Ha: There is a difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+
+
+t_test_3p <- t.test(`3P_pct` ~ Res , data = team_game)
+t_test_3p
 
 ```
+```{r}
+# Defensive Pressure (Steals + Blocks)
 
+# H0: There is no difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
+# Ha: There is a difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
 
+t_test_def <- t.test(defensive_pressure ~ Res, data = team_game)
+t_test_def
+
+```
 ## 5. K-Clustering (Derek)
 
 ```{r}
