@@ -15,8 +15,14 @@ source("00_requirements.R")
 search()
 
 ```
-To begin, this report was made in conjunction with Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong for STAT107 at UCR taught by Jose Sanchez Gomez. 
+Abstract:
+Analytics and data-driven metrics have transformed modern NBA strategy, influencing roster decisions, offensive schemes, and defensive priorities. While many statistics are tracked in every game, not all contribute equally to winning. This study examines which team-level offensive and defensive statistics are most strongly associated with winning NBA games during the 2024–25 season.
 
+Using cleaned box score data transformed into team aggregates, we evaluate the effect of shooting efficiency, three-point performance, free throws, defensive pressure (blocks + steals), and total points. We apply hypothesis testing, unsupervised clustering, and logistic regression to measure statistical significance, group team styles, and predict game outcomes. Results show that shooting efficiency (FG%) and defensive pressure are highly predictive of winning, while three-point accuracy contributes strongly but less consistently across teams. Logistic regression confirms that field-goal percentage and total points hold the highest predictive power with above-average classification accuracy.
+
+This analysis provides insights useful to coaches, analysts, and scouting teams seeking to optimize roster construction and during-game strategy in the data-driven era of the NBA.
+
+This report was made in conjunction with Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong for STAT107 at UCR taught by Jose Sanchez Gomez. 
 The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
 
 ## 1. Introduction
@@ -26,21 +32,21 @@ What statistical skills or attributes actually lead to winning games?
 
 Although basketball is a team sport, game outcomes ultimately reflect patterns in offensive and defensive performance. Understanding which team-level statistics correlate most strongly with winning can benefit coaches, analysts, and front offices by highlighting which areas contribute most to success.
 
-In this project, we analyze team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
+In this project, we analyze all team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
 
 ##Research Question
 Which team-level offensive and defensive statistics are most strongly associated with winning NBA games in the 2024–25 season?
 
 ##To answer this question, we apply multiple statistical tools, including:
-- Two-sample t-tests
-- K-means clustering 
-- Logistic regression
+- Two-sample t-tests to compare offense vs. defense metrics between wins and losses
+- K-means clustering to group team performance styles
+- Logistic regression to predicti game outcomes from key features by turning the variables into binary conditions of win or lose
 
 This multi-method approach allows us to evaluate individual statistical differences, build predictive models, and examine broader team-performance patterns.
 
 
 ## 2. Data
-The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
+The data used for this analysis was sourced from Kaggle, a popular platform for data sharing that provides publicly available real estate data. The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
 
 Offensive metrics:
 FG (field goals), FGA (field goal attempts), FG%, 3P (three-pointers made), 3PA (three-point attempts), 3P% (three-point percentage), AST (assists), and PTS (points).
