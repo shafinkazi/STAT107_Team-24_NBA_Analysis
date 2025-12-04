@@ -46,7 +46,7 @@ This multi-method approach allows us to evaluate individual statistical differen
 
 
 ## 2. Data
-The data used for this analysis was sourced from Kaggle, a popular platform for data sharing that provides publicly available real estate data. The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
+The data used for this analysis was sourced from Kaggle, a popular platform for data sharing that provides publicly available NBA teams' data in their playoffs. The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
 
 Offensive metrics:
 FG (field goals), FGA (field goal attempts), FG%, 3P (three-pointers made), 3PA (three-point attempts), 3P% (three-point percentage), AST (assists), and PTS (points).
