@@ -1,1 +1,93 @@
+---
+title: "STAT 107 Final Project: NBA Team Statistics and Winning"
+author: "Team 24: Shafin Kazi, [Name], [Name]"
+date: "Due: 2025-12-05"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+source("00_requirements.R")
+search()
+
+```
+To begin, this report was made in conjunction with Tiffany Huang, Shafin Kazi, and Derek De Gracia for STAT107 at UCR taught by Jose Sanchez Gomez. 
+
+The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
+
+## 1. Introduction
+The modern NBA is shaped heavily by analytics, efficiency, and data-driven decision-making. Teams increasingly rely on statistical insights to evaluate player performance, optimize game strategies, and gain competitive advantages. Among the many questions that arise in basketball analytics, one of the most fundamental is:
+
+What statistical skills or attributes actually lead to winning games?
+
+Although basketball is a team sport, game outcomes ultimately reflect patterns in offensive and defensive performance. Understanding which team-level statistics correlate most strongly with winning can benefit coaches, analysts, and front offices by highlighting which areas contribute most to success.
+
+In this project, we analyze team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
+
+##Research Question
+Which team-level offensive and defensive statistics are most strongly associated with winning NBA games in the 2024–25 season?
+
+##To answer this question, we apply multiple statistical tools, including:
+- Two-sample t-tests
+- K-means clustering 
+- Logistic regression
+
+This multi-method approach allows us to evaluate individual statistical differences, build predictive models, and examine broader team-performance patterns.
+
+
+## 2. Data
+The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
+
+Offensive metrics:
+FG (field goals), FGA (field goal attempts), FG%, 3P (three-pointers made), 3PA (three-point attempts), 3P% (three-point percentage), AST (assists), and PTS (points).
+
+Defensive metrics:
+STL (steals), BLK (blocks), TOV (turnovers), DRB (defensive rebounds), and TRB (total rebounds).
+
+```{r}
+#Data Cleaning 
+raw_database_24_25 <- read_csv("database_24_25.csv")
+head(raw_database_24_25)
+
+```
+
+
+
+## 3. Exploratory Data Analysis
+
+```{r}
+#Offensive Statistics
+
+```
+
+```{r}
+#Defensive Statistics
+
+
+```
+
+
+## 4. Two-Sample T-Tests (Shafin)
+
+```{r}
+
+```
+
+
+## 5. K-Clustering (Derek)
+
+```{r}
+
+```
+
+
+## 6. Logistic Regression
+
+```{r}
+
+```
 
