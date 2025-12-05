@@ -187,9 +187,22 @@ summary(nba_model)
 ```
 
 ```{r, echo = FALSE}
-# conduct elbow test to determine optimal number of means (k) for GAME stats
+# conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
 
-# scale GAMES by defensive AND offensive stats
+#Clustering TEAMs by defensive AND offensive stats by 
+team_scaled <- scale(
+  team_season[, c( # "wins",
+                   "avg_3P_pct", 
+                   "avg_FG_pct", 
+                   "total_ft",
+                   "total_stl", 
+                   "total_blk")])
+#summary(team_scaled)
+kmeans_result <- kmeans(team_scaled, centers = 3)
+
+team_season$cluster <- kmeans_result$cluster
+
+# scale GAMES stats by defensive AND offensive stats
 team_game_scaled <- scale(
   team_game[, c(   "3P_pct", 
                    "FG_pct", 
@@ -265,22 +278,6 @@ boxplot(STL ~ cluster, data = team_game,
         xlab = "Cluster",
         ylab = "Total Steals",
         col = colors)
-```
-```{r, include = FALSE}
-#Derek
-#Clustering TEAMS by defensive AND offensive stats
-team_scaled <- scale(
-  team_season[, c( # "wins",
-                   "avg_3P_pct", 
-                   "avg_FG_pct", 
-                   "total_ft",
-                   "total_stl", 
-                   "total_blk")])
-#summary(team_scaled)
-kmeans_result <- kmeans(team_scaled, centers = 3)
-
-team_season$cluster <- kmeans_result$cluster
-
 ```
 
 
