@@ -238,9 +238,6 @@ accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
 accuracy
 
 # 5. ROC Curve and AUC
-if(!require(pROC)) install.packages("pROC")
-library(pROC)
-
 roc_obj <- roc(team_game$win_binary, pred_prob)
 plot(roc_obj, main = "ROC Curve — Logistic Regression Model")
 auc(roc_obj)
