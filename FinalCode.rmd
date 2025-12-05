@@ -189,7 +189,7 @@ summary(nba_model)
 ```{r, echo = FALSE}
 # conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
 
-#Clustering TEAMs by defensive AND offensive stats by 
+#Scaling TEAMs by defensive AND offensive stats by 
 team_scaled <- scale(
   team_season[, c( # "wins",
                    "avg_3P_pct", 
@@ -198,11 +198,9 @@ team_scaled <- scale(
                    "total_stl", 
                    "total_blk")])
 #summary(team_scaled)
-kmeans_result <- kmeans(team_scaled, centers = 3)
 
-team_season$cluster <- kmeans_result$cluster
 
-# scale GAMES stats by defensive AND offensive stats
+# scaling GAMES stats by defensive AND offensive stats
 team_game_scaled <- scale(
   team_game[, c(   "3P_pct", 
                    "FG_pct", 
@@ -235,16 +233,21 @@ plot(1:10, wss, type = "b",
 ```{r}
 head(team_game)
 ```
-```{r, echo = FALSE}
-#Derek
+```{r, include = FALSE}
+# add cluster column for teams and games
 #summary(team_scaled)
 kmeans_game_result <- kmeans(team_game_scaled, centers = 3)
 
 team_game$cluster <- kmeans_game_result$cluster
 
+kmeans_team_result <- kmeans(team_scaled, centers = 3)
 
+team_season$cluster <- kmeans_team_result$cluster
 # Plot of clusters 
 # Axis of the graph are the 2 most significant factors from model
+```
+
+```{r, echo = FALSE}
 plot(team_game$FG_pct, team_game$STL,
      col = team_game$cluster,
      pch = 19,
