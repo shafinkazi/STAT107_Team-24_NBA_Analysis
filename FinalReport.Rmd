@@ -28,11 +28,16 @@ We first begin by loading the data in a readable format by using read_csv() and 
 ```{r}
 #Read in the dataset
 database_24_25 <- read_csv("database_24_25.csv")
+team_records <- read_csv("nba_teams.csv") # extra dataset for team wins/losses
 #View(database_24_25)
 #summary(database_24_25)
-head(database_24_25)
+print(database_24_25)
+print(team_records)
 ```
 We follow this by summarizing with group_by() followed with pipe operators, then summing the wins and losses of each team, their average 3P% and FG% with sum(), we then order them by the amount of wins by arrange(desc()) and using print() to print out the team summary.
+```{r}
+head(team_records)
+```
 ```{r}
 # Shafin edited by Derek; Tiffany
 #Team summary is a dataset of every team and the stats we are interested in researching
@@ -45,8 +50,6 @@ We follow this by summarizing with group_by() followed with pipe operators, then
 team_summary <- database_24_25 %>%
   group_by(Tm) %>%
   summarise(
-    wins = sum(Res == "W"), # wins
-    losses = sum(Res == "L"), # losses
     # offensive stats
     avg_3P_pct = mean(`3P%`, na.rm = TRUE), # add avg 3P%
     avg_FG_pct = mean(`FG%`, na.rm = TRUE),  # add avg FG%
@@ -56,8 +59,21 @@ team_summary <- database_24_25 %>%
     total_blocks = sum(`BLK`, na.rm = TRUE), # add total blocks
     total_games = n_distinct(Data), # total games played
   ) %>%
-  arrange(desc(wins)) # order by wins
+  arrange(desc(avg_3P_pct)) # order by wins
 
+
+# error with pho brk and cho
+team_summary$Tm[team_summary$Tm %in% c("PHO", "BRK", "CHO")] <- c("PHX", "BKN", "CHA")
+
+
+
+team_summary <- team_summary %>% # add wins, losses, and win/loss ratio
+  left_join(team_records %>% select(Tm, wins, losses, `W/L%`), by = "Tm")
+team_summary <- team_summary %>%
+  relocate(wins, losses, `W/L%`, .after = 1) # move wins and losses columns to the left side
+
+team_summary <- team_summary %>% # order by who has the most wins
+  arrange(desc(wins))
 print(team_summary)
 ```
 ```{r}
@@ -67,7 +83,8 @@ names(team_summary)
 #Derek
 #Clustering teams by defensive AND offensive stats
 team_scaled <- scale(
-  team_summary[, c("avg_3P_pct", 
+  team_summary[, c("wins",
+                   "avg_3P_pct", 
                    "avg_FG_pct", 
                    "total_ft",
                    "total_stl", 
@@ -79,8 +96,16 @@ kmeans_result <- kmeans(team_scaled, centers = 3)
 team_summary$cluster <- kmeans_result$cluster
 ```
 ```{r}
-nba_model <- lm(wins ~ avg_3P_pct + avg_FG_pct + total_ft + 
-                total_stl + total_blocks, data = team_summary)
+# Notes on the model:
+# R^2 with all 5: 0.2976
+# avg_3P_pct increases R^2
+# avg_FG_pct slightly increases R^2
+# total_ft very slightly increases R^2
+# total_stl increases R^2
+# total_blocks slightly increases
+# every factor contributes to making the model more accurate, some much more than others.
+nba_model <- lm(wins ~ avg_3P_pct + avg_FG_pct + total_ft +
+                  total_stl, data = team_summary)
 summary(nba_model)
 
 plot(team_summary$avg_3P_pct, team_summary$total_stl,
@@ -89,6 +114,9 @@ plot(team_summary$avg_3P_pct, team_summary$total_stl,
      xlab = "Average 3 Pointer Percentage",
      ylab = "Total Steals",
      main = "3P% and Steals by Team Type")
+```
+```{r}
+head(team_summary)
 ```
 
 ```{r}
