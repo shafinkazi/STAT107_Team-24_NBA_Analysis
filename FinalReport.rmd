@@ -92,6 +92,7 @@ team_game <- raw_database_24_25 %>%
 ```{r}
 head(team_game)
 ```
+
 ```{r}
 # TEAM-SEASON
 
