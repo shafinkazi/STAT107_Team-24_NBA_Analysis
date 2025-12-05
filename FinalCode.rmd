@@ -165,7 +165,9 @@ set.seed(800) # keep clustering consistent
 head(team_season)
 ```
 
+Before clustering, we wanted to see the significance of each variable, so we utilized a multiple linear regression model. The model tries to predict the number of wins a team had based on average 3 point make percentage, average field goal make percentage, total free throws made, total number of steals, and total number of blocks a team had. 
 
+As you can see below, the R^2 score of the model is 0.6003, meaning the model can explain 60.03% of variability in the number of wins a team had in the 2024-2025 NBA season. 
 ```{r, echo = FALSE}
 # Create model to see which of the variables are most significant
 # Notes on the model:
@@ -185,7 +187,9 @@ nba_model <- lm(wins ~ avg_3P_pct +
                 data = team_season)
 summary(nba_model)
 ```
+As shown above, among the five variables, the factors which had the lowest p-values were average field goal make percentage and total number of steals a team had. While the other factors had higher p-values implying that they may not be as significant, removing them reduced the overall R^2 score of the model. With this in mind, teams were clustered based on all five factors.
 
+To determine how many clusters to use, an elbow test was conducted for stats by game and stats by each team's season.
 ```{r, echo = FALSE}
 # conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
 
@@ -222,7 +226,7 @@ plot(1:10, wss_game, type = "b",
 # Plot shows k = 3 is the most optimal
 ```
 ```{r, echo = FALSE}
-# cplot elbow test of team stats
+# plot elbow test of team stats
 wss <- sapply(1:10, function(k){
   kmeans(team_scaled, centers = k, nstart = 20)$tot.withinss
 })
@@ -230,10 +234,10 @@ wss <- sapply(1:10, function(k){
 plot(1:10, wss, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
-     main = "Elbow Method for Team Stats")
+     main = "Elbow Method for Team Season Stats")
 # Plot shows k = 3 is the most optimal
 ```
-
+Both of the elbow tests showed that k = 3 would be an appropriate number of clusters.
 ```{r, include = FALSE}
 # add cluster column for teams and games
 #summary(team_scaled)
@@ -247,6 +251,47 @@ team_season$cluster <- kmeans_team_result$cluster
 
 ```
 
+Below is a scatterplot where each point represents a team. They are plotted based on average field goal percentage as well and total steals in the last season. The color of each point represents the cluster they were grouped into.
+
+```{r, echo = FALSE}
+# Plot of Team clusters 
+# Axis of the graph are the 2 most significant factors from model
+plot(team_season$avg_FG_pct, team_season$total_stl,
+     col = team_season$cluster,
+     pch = 19,
+     xlab = "Average Feild Goal Percentage",
+     ylab = "Total Steals",
+     main = "Teams by Total Steals and Field Goal Percentage")
+```
+As you can see, each cluster is defined in some way by their number of steals and/or their field goal performance. To dive deeper into this, we created box plots to examine each cluster's win rate, average field goal percentage, and total number of steals.
+```{r, echo = FALSE}
+# Analyze what sets the team clusters apart
+par(mfrow = c(1, 3)) # 1 row by 3 plots
+colors <- c("red", "blue", "green")
+
+# wins
+boxplot(wins ~ cluster, data = team_season,
+        main = "Wins by Cluster",
+        xlab = "Cluster",
+        ylab = "Number of Wins",
+        col = colors)
+
+# avg_FG_pct
+boxplot(avg_FG_pct ~ cluster, data = team_season,
+        main = "FG% by Cluster",
+        xlab = "Cluster",
+        ylab = "Avg FG%",
+        col = colors)
+# total_stl
+boxplot(total_stl ~ cluster, data = team_season,
+        main = "Total Steals by Cluster",
+        xlab = "Cluster",
+        ylab = "Total Steals",
+        col = colors)
+```
+The box plots show that teams that tend to have higher win rates excel in at least one of the stats. Cluster 2 displays high performance in making their shots, while Cluster 1 showed a high number of steals. Cluster 3 did not excel in either of these categories and suffered lower win rates compared to the other two clusters.
+
+While this finding was very interesting, we were still curious about individual game play, so we clustered and examined individual games as well.
 ```{r, echo = FALSE}
 # plot of game stat clusters
 plot(team_game$FG_pct, team_game$STL,
@@ -254,9 +299,10 @@ plot(team_game$FG_pct, team_game$STL,
      pch = 19,
      xlab = "FG%",
      ylab = "Total Steals",
-     main = "FG% and Steals Game Performance")
+     main = "Games plotted by FG% and Steals")
 
 ```
+As you can see, there are also some distinctions between individual games that can be highlighted by steals and field goals.
 ```{r, echo = FALSE}
 # Analyze what sets the GAME clusters apart
 par(mfrow = c(1, 2)) # 1 row by 3 plots
@@ -283,44 +329,8 @@ boxplot(STL ~ cluster, data = team_game,
         ylab = "Total Steals",
         col = colors)
 ```
+When looking at individual games, the trend is still there. When clustered into three groups, there are typically two groups with higher win rates, and one with a lower rate. The two winning groups either show excellence in shot making or stealing the ball, while the losing group struggles to shine with either.
 
-
-```{r, echo = FALSE}
-# Plot of Teamclusters 
-# Axis of the graph are the 2 most significant factors from model
-plot(team_season$avg_FG_pct, team_season$total_stl,
-     col = team_season$cluster,
-     pch = 19,
-     xlab = "Average 3 Pointer Percentage",
-     ylab = "Total Steals",
-     main = "3P% and Steals by Team Type")
-```
-
-```{r, echo = FALSE}
-# Analyze what sets the team clusters apart
-par(mfrow = c(1, 3)) # 1 row by 3 plots
-colors <- c("red", "blue", "green")
-
-# wins
-boxplot(wins ~ cluster, data = team_season,
-        main = "Wins by Cluster",
-        xlab = "Cluster",
-        ylab = "Number of Wins",
-        col = colors)
-
-# avg_FG_pct
-boxplot(avg_FG_pct ~ cluster, data = team_season,
-        main = "FG% by Cluster",
-        xlab = "Cluster",
-        ylab = "Avg FG%",
-        col = colors)
-# total_stl
-boxplot(total_stl ~ cluster, data = team_season,
-        main = "Total Steals by Cluster",
-        xlab = "Cluster",
-        ylab = "Total Steals",
-        col = colors)
-```
 
 ## 6. Logistic Regression (Tiffany)
 
