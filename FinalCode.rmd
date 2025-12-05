@@ -337,6 +337,7 @@ boxplot(STL ~ cluster, data = team_game,
 When looking at individual games, the trend is still there. When clustered into three groups, there are typically two groups with higher win rates, and one with a lower rate. The two winning groups either show excellence in shot making or stealing the ball, while the losing group struggles to shine with either.
 
 
+
 ## 6. Logistic Regression (Tiffany)
 
 ```{r}
@@ -356,23 +357,23 @@ logit_model <- glm(
 summary(logit_model)
 ```
 The code begins by creating a binary win/loss variable using `mutate()`, converting `"W"` to 1 and all other results to 0 so that logistic regression can be applied, since it requires a numeric 0/1 outcome. A logistic regression model is then fit using `glm()` with the binomial family, predicting the probability of winning based on field goal percentage, three-point percentage, free throws, steals, blocks, defensive pressure, and points scored. The `summary()` function outputs coefficient estimates, standard errors, z-values, and p-values, which indicate how strongly each predictor influences the odds of winning. 
-To evaluate the model’s goodness of fit, a null model is first created with only an intercept, and a likelihood ratio test compares it to the full model via `anova()`, where a significant chi-square p-value suggests the predictors collectively improve model fit. 
-The Hosmer–Lemeshow test is then run to assess calibration; a non-significant p-value indicates the predicted probabilities align well with observed outcomes. Predicted win probabilities are generated using `predict()`, converted into win/loss predictions at a 0.5 threshold, and evaluated with a confusion matrix, from which accuracy is calculated as the proportion of correctly classified games. 
-The ROC curve and AUC are then produced using the pROC package; the ROC curve visualizes the model’s ability to distinguish wins from losses at varying thresholds, while the AUC quantifies discrimination quality (with values closer to 1 indicating stronger performance). Finally, the Brier score is computed as the mean squared difference between actual outcomes and predicted probabilities, with lower values indicating better calibrated and more accurate probability estimates.
+To evaluate the model’s goodness of fit, a null model is first created with only an intercept, and a likelihood ratio test compares it to the full model via `anova()`, where a significant chi-square p-value suggests the predictors improve model fit. 
+The Hosmer–Lemeshow test is used to assess calibration, a non-significant p-value indicates the predicted probabilities align with observed outcomes. Predicted win probabilities are generated using `predict()`, converted into win/loss predictions at a 0.5 threshold.
+The ROC curve and AUC are then produced using the pROC package the ROC curve visualizes the model’s ability to distinguish wins from losses at varying thresholds, while the AUC shows quality with values closer to 1 indicating stronger performance. The Brier score is computed as the mean squared difference between actual outcomes and predicted probabilities, with lower values indicating more accurate probability estimates.
 
-The logistic regression model estimates how various game statistics influence the probability of winning a game. The intercept is large and negative at −15.74, so without meaningful contributions from shooting efficiency or counting stats, the baseline chance of winning is extremely low. This is expected in logistic models where predictors are measured and the intercept is simply the model’s starting value before adding any performance metrics from percentages and counts.
+The logistic regression model estimates how various game statistics influence the probability of winning a game. The intercept is large and negative at −15.74, so without meaningful contributions from shooting efficiency or counting stats, the baseline chance of winning is extremely low. This is expected in logistic models where the intercept is the model’s starting value before adding any performance metrics from percentages and counts.
 
-Field Goal Percentage (FG_pct) has a strong positive coefficient at 11.08 and is highly significant at p < 1e-09. This indicates that even small increases in field goal percentage substantially increase the probability of winning. Because FG% is expressed as a proportion, a change from 0.45 to 0.46 or even 1 percentage point multiplies the odds of winning by exp(0.11) equal to 1.12. In practical terms, FG% is one of the most important predictors—better shooting efficiency reliably translates into higher win probability.
+Field Goal Percentage (FG_pct) has a strong positive coefficient at 11.08 and is highly significant at p < 1e-09. This indicates that even small increases in field goal percentage substantially increase the probability of winning. Because FG% is expressed as a proportion, a change from 0.45 to 0.46 or even 1 percentage point multiplies the odds of winning by exp(0.11) equal to 1.12. FG% is one of the most important predictors where a better shooting efficiency translates into higher win probability.
 
-Three-Point Percentage (3P_pct) also has a positive and significant effect at 3.69, p < 0.001. While smaller in magnitude than FG%, the interpretation is similar, each 1 percentage point improvement increases the odds of winning by exp(0.0369) equal to 1.038. This means three-point shooting matters, but not as strongly as overall FG%.
+Three-Point Percentage (3P_pct) also has a positive and significant effect at 3.69, p < 0.001. While smaller in magnitude than FG%, each 1 percentage point improvement increases the odds of winning by exp(0.0369) equal to 1.038. This means three-point shooting matters, but not as much as FG%.
 
-Free Throws (FT) shows a small, marginally significant coefficient at 0.0238, p equal to 0.054. This suggests that each additional free throw made slightly improves win probability, but the effect is not as strong as shooting efficiency or defensive stats. It's possible free throws are partially accounted for by points in the model.
+Free Throws (FT) shows a small, marginally significant coefficient at 0.0238, p equal to 0.054. This suggests that each additional free throw made improves win probability, but the effect is not as strong. It's possible free throws are partially accounted for by points in the model.
 
-Steals (STL) has a strong, significant positive effect at 0.136, p < 6e-11. Each steal increases the odds of winning by exp(0.136) equal to 1.15, meaning steals are highly impactful. Teams that steals often stop opponents’ possessions of the ball.
+Steals (STL) has a significant positive effect at 0.136, p < 6e-11. Each steal increases the odds of winning by exp(0.136) equal to 1.15, meaning steals are highly impactful. Teams that steals often stop opponents’ possessions of the ball.
 
 Blocks (BLK) also have a notable positive effect at 0.176, p < 2e-11. Each block increases the odds of winning by exp(0.176) equal to 1.19. This reinforces that defensive pressure at the rim and preventing high-value shots contributes significantly.
 
-Points has a small but highly significant coefficient at 0.0604, p < 2e-12. Each additional point increases the odds of winning by exp(0.0604) equal to 1.062. Although getting more points is obviously related to winning, its effect is reduced because shooting efficiency and other metrics already explain the scoring variety.
+Points has a small significant coefficient at 0.0604, p < 2e-12. Each additional point increases the odds of winning by exp(0.0604) equal to 1.062. Although getting more points is obviously related to winning, its effect is reduced because shooting efficiency and other metrics already explain the scoring variety.
 
 ## 7. Goodness of Fit Tests (Tiffany)
 ```{r}
@@ -397,9 +398,9 @@ brier_score <- mean((team_game$win_binary - pred_prob)^2)
 brier_score
 
 ```
-The Likelihood Ratio Test comparing the fitted model to the null model shows a substantial reduction in deviance at 565.73 with a p-value far below 0.001, demonstrating that the set of predictors—including shooting percentages, defensive actions, and total points—provides significantly more explanatory power than a model with no predictors. This confirms that the chosen variables meaningfully improve the model’s ability to distinguish wins from losses.
+The Likelihood Ratio Test comparing the fitted model to the null model shows a reduction in deviance at 565.73 with a p-value far below 0.001, demonstrating that the set of predictors—including shooting percentages, defensive actions, and total points provides more explanatory power than with no predictors. The chosen variables meaningfully improve the model’s ability to distinguish wins from losses.
 
-Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluates how well the predicted probabilities align with observed outcomes across deciles of predicted risk. The test result of X-squared = 12.196, p = 0.1427 does not indicate a statistically significant lack of fit, meaning there is no evidence that the model over- or under-predicts win probability for any group of games. The model’s predicted probabilities match the real distribution of outcomes well. The pseudo R-squared values each suggest a strong fit for regression because they account for variation in win probability.
+Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluates how well the predicted probabilities align with observed outcomes across deciles of predicted risk. The test result of X-squared = 12.196, p = 0.1427 does not indicate a statistically significant lack of fit, meaning there is no evidence that the model over- or under-predicts win probability for any group of games. The model’s predicted probabilities match the real distribution of outcomes. The pseudo R-squared values each suggest a strong fit for regression because they account for variation in win probability.
 
 
 ## 8. Conclusion
