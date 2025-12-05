@@ -140,6 +140,7 @@ t_test_3p <- t.test(`3P_pct` ~ Res , data = team_game)
 t_test_3p
 
 ```
+The first t-test compared the average 3-point shooting percentage between games teams won and games they lost. The results show a clear difference: winning teams shot an average of 0.387 from three, while losing teams averaged 0.331. The p-value (< 2.2e-16) shows this difference is statistically significant. This means teams that win tend to shoot much better from three than teams that lose, suggesting that 3-point efficiency is an important offensive factor connected to winning games.
 ```{r}
 # Defensive Pressure (Steals + Blocks)
 
@@ -150,6 +151,12 @@ t_test_def <- t.test(defensive_pressure ~ Res, data = team_game)
 t_test_def
 
 ```
+The second t-test compared defensive pressure—defined as steals plus blocks—between wins and losses. Winning teams averaged 14.23 defensive-pressure plays per game, while losing teams averaged 12.43. Again, the p-value (< 2.2e-16) indicates a statistically significant difference. This shows that winning teams typically apply more defensive pressure than losing teams, meaning defensive activity also plays a meaningful role in game outcomes.
+
+
+Overall Conclusion:
+Both t-tests show that offensive and defensive metrics differ significantly between wins and losses. Winning teams tend to shoot more efficiently from three and apply stronger defensive pressure. These findings support the research question by showing that specific team-level statistics—such as 3-point percentage and defensive pressure—are clearly associated with winning NBA games. While the t-tests do not reveal which statistic is the most important, they provide strong evidence that both offense and defense contribute to success.
+
 ## 5. K-Clustering (Derek)
 
 ```{r}
