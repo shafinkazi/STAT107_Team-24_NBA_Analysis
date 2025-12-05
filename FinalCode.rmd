@@ -207,7 +207,10 @@ team_game_scaled <- scale(
                    "FT",
                    "STL", 
                    "BLK")])
+```
 
+```{r, echo = FALSE}
+# plot elbow plot of game stats
 wss_game <- sapply(1:10, function(k){
   kmeans(team_game_scaled, centers = k, nstart = 20)$tot.withinss
 })
@@ -215,11 +218,11 @@ wss_game <- sapply(1:10, function(k){
 plot(1:10, wss_game, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
-     main = "Elbow Method")
+     main = "Elbow Method for Game Stats")
 # Plot shows k = 3 is the most optimal
 ```
 ```{r, echo = FALSE}
-# conduct elbow test to determine optimal number of means (k)
+# cplot elbow test of team stats
 wss <- sapply(1:10, function(k){
   kmeans(team_scaled, centers = k, nstart = 20)$tot.withinss
 })
@@ -227,12 +230,10 @@ wss <- sapply(1:10, function(k){
 plot(1:10, wss, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
-     main = "Elbow Method")
+     main = "Elbow Method for Team Stats")
 # Plot shows k = 3 is the most optimal
 ```
-```{r}
-head(team_game)
-```
+
 ```{r, include = FALSE}
 # add cluster column for teams and games
 #summary(team_scaled)
@@ -243,11 +244,11 @@ team_game$cluster <- kmeans_game_result$cluster
 kmeans_team_result <- kmeans(team_scaled, centers = 3)
 
 team_season$cluster <- kmeans_team_result$cluster
-# Plot of clusters 
-# Axis of the graph are the 2 most significant factors from model
+
 ```
 
 ```{r, echo = FALSE}
+# plot of game stat clusters
 plot(team_game$FG_pct, team_game$STL,
      col = team_game$cluster,
      pch = 19,
@@ -285,7 +286,7 @@ boxplot(STL ~ cluster, data = team_game,
 
 
 ```{r, echo = FALSE}
-# Plot of clusters 
+# Plot of Teamclusters 
 # Axis of the graph are the 2 most significant factors from model
 plot(team_season$avg_FG_pct, team_season$total_stl,
      col = team_season$cluster,
@@ -296,7 +297,7 @@ plot(team_season$avg_FG_pct, team_season$total_stl,
 ```
 
 ```{r, echo = FALSE}
-# Analyze what sets the clusters apart
+# Analyze what sets the team clusters apart
 par(mfrow = c(1, 3)) # 1 row by 3 plots
 colors <- c("red", "blue", "green")
 
