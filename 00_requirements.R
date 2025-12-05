@@ -59,6 +59,20 @@ if (!require(rmarkdown)) {
   library(rmarkdown)
 }
 
-if(!require(pROC)) install.packages("pROC")
-library(pROC)
+if(!require(pROC)) {
+  install.packages("pROC")
+  library(pROC)
+}
+
+if(!require(ResourceSelection)) { # Hosmer–Lemeshow Test (requires ResourceSelection package)
+  install.packages("ResourceSelection")
+  library(ResourceSelection)
+}
+
+if(!require(pscl)) {  # Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
+  install.packages("pscl")
+  library(pscl)
+}
+
+
 
