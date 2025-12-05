@@ -401,6 +401,10 @@ The Likelihood Ratio Test comparing the fitted model to the null model shows a s
 
 Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluates how well the predicted probabilities align with observed outcomes across deciles of predicted risk. The test result of X-squared = 12.196, p = 0.1427 does not indicate a statistically significant lack of fit, meaning there is no evidence that the model over- or under-predicts win probability for any group of games. The model’s predicted probabilities match the real distribution of outcomes well. The pseudo R-squared values each suggest a strong fit for regression because they account for variation in win probability.
 
+
+## 8. Conclusion
+
+
 Team Contributions by individual:
 Derek:
 Shafin:
