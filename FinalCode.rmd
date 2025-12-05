@@ -213,15 +213,9 @@ null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
 anova(null_model, logit_model, test = "Chisq")
 
 # 2. Hosmer–Lemeshow Test (requires ResourceSelection package)
-if(!require(ResourceSelection)) install.packages("ResourceSelection")
-library(ResourceSelection)
-
 hoslem.test(team_game$win_binary, fitted(logit_model), g = 10)
 
 # 3. Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
-if(!require(pscl)) install.packages("pscl")
-library(pscl)
-
 pR2(logit_model)
 
 # 4. Classification Accuracy and Confusion Matrix
