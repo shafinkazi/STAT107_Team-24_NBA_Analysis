@@ -179,13 +179,13 @@ As you can see below, the R^2 score of the model is 0.6003, meaning the model ca
 # total_stl 0.4749 * 
 # total_blocks 0.5762
 
-nba_model <- lm(wins ~ avg_3P_pct + 
+season_model <- lm(wins ~ avg_3P_pct + 
                   avg_FG_pct + 
                   total_ft +
                   total_stl +
                   total_blk, 
                 data = team_season)
-summary(nba_model)
+summary(season_model)
 ```
 As shown above, among the five variables, the factors which had the lowest p-values were average field goal make percentage and total number of steals a team had. While the other factors had higher p-values implying that they may not be as significant, removing them reduced the overall R^2 score of the model. With this in mind, teams were clustered based on all five factors.
 
@@ -194,14 +194,14 @@ To determine how many clusters to use, an elbow test was conducted for stats by 
 # conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
 
 #Scaling TEAMs by defensive AND offensive stats by 
-team_scaled <- scale(
+season_scaled <- scale(
   team_season[, c( # "wins",
                    "avg_3P_pct", 
                    "avg_FG_pct", 
                    "total_ft",
                    "total_stl", 
                    "total_blk")])
-#summary(team_scaled)
+#summary(season_scaled)
 
 
 # scaling GAMES stats by defensive AND offensive stats
@@ -215,11 +215,11 @@ team_game_scaled <- scale(
 
 ```{r, echo = FALSE}
 # plot elbow plot of game stats
-wss_game <- sapply(1:10, function(k){
+game_elb_test <- sapply(1:10, function(k){
   kmeans(team_game_scaled, centers = k, nstart = 20)$tot.withinss
 })
 
-plot(1:10, wss_game, type = "b",
+plot(1:10, game_elb_test, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
      main = "Elbow Method for Game Stats")
@@ -227,11 +227,11 @@ plot(1:10, wss_game, type = "b",
 ```
 ```{r, echo = FALSE}
 # plot elbow test of team stats
-wss <- sapply(1:10, function(k){
-  kmeans(team_scaled, centers = k, nstart = 20)$tot.withinss
+season_elb_test <- sapply(1:10, function(k){
+  kmeans(season_scaled, centers = k, nstart = 20)$tot.withinss
 })
 
-plot(1:10, wss, type = "b",
+plot(1:10, season_elb_test, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
      main = "Elbow Method for Team Season Stats")
@@ -240,14 +240,14 @@ plot(1:10, wss, type = "b",
 Both of the elbow tests showed that k = 3 would be an appropriate number of clusters.
 ```{r, include = FALSE}
 # add cluster column for teams and games
-#summary(team_scaled)
+#summary(season_scaled)
 kmeans_game_result <- kmeans(team_game_scaled, centers = 3)
 
 team_game$cluster <- kmeans_game_result$cluster
 
-kmeans_team_result <- kmeans(team_scaled, centers = 3)
+kmeans_season_result <- kmeans(season_scaled, centers = 3)
 
-team_season$cluster <- kmeans_team_result$cluster
+team_season$cluster <- kmeans_season_result$cluster
 
 ```
 
@@ -305,9 +305,9 @@ plot(team_game$FG_pct, team_game$STL,
 As you can see, there are also some distinctions between individual games that can be highlighted by steals and field goals.
 ```{r, echo = FALSE}
 # Analyze what sets the GAME clusters apart
-par(mfrow = c(1, 2)) # 1 row by 3 plots
 colors <- c("red", "blue", "green", "yellow")
 
+# Barplot for wins and losses by cluster
 # wins
 ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
   geom_bar(position = "dodge") +
@@ -315,7 +315,10 @@ ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
        x = "Cluster",
        y = "Count of Games",
        fill = "Result")
-
+```
+```{r, echo = FALSE}
+# boxplot for FG% and STL by cluster
+par(mfrow = c(1, 2)) # 1 row by 3 plots
 # avg_FG_pct
 boxplot(FG_pct ~ cluster, data = team_game,
         main = "FG% by Cluster",
