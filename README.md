@@ -30,7 +30,7 @@ The final written report is included in **FinalReport.Rmd** and its knitted PDF.
 This file provides an overview of the repository, describes each file, and explains how to reproduce the analysis.
 
 **database_24_25.csv**  
-This file contains the main NBA dataset used in the project. It includes player-level statistics for the 2024–25 season, which we aggregate into team-level summaries for analysis.
+This file contains the main NBA dataset used in the project. It includes player-level statistics for the 2024–25 season, which we aggregate into team-level summaries for analysis. The data was sourced from Kaggle, a popular platform for data sharing that provides publicly available NBA teams' data in their playoffs. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis.
 
 **00_requirements.R**  
 This file loads all required R packages for the project so the analysis can run smoothly without repeatedly calling `library()`.
