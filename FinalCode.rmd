@@ -1,0 +1,398 @@
+---
+title: "STAT 107 Final Project: NBA Team Statistics and Winning"
+author: "Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong"
+date: "Due: 2025-12-05"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+source("00_requirements.R")
+search()
+
+```
+Abstract:
+Analytics and data-driven metrics have transformed modern NBA strategy, influencing roster decisions, offensive schemes, and defensive priorities. While many statistics are tracked in every game, not all contribute equally to winning. This study examines which team-level offensive and defensive statistics are most strongly associated with winning NBA games during the 2024–25 season.
+
+Using cleaned box score data transformed into team aggregates, we evaluate the effect of shooting efficiency, three-point performance, free throws, defensive pressure (blocks + steals), and total points. We apply hypothesis testing, unsupervised clustering, and logistic regression to measure statistical significance, group team styles, and predict game outcomes. Results show that shooting efficiency (FG%) and defensive pressure are highly predictive of winning, while three-point accuracy contributes strongly but less consistently across teams. Logistic regression confirms that field-goal percentage and total points hold the highest predictive power with above-average classification accuracy.
+
+This analysis provides insights useful to coaches, analysts, and scouting teams seeking to optimize roster construction and during-game strategy in the data-driven era of the NBA.
+
+This report was made in conjunction with Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong for STAT107 at UCR taught by Jose Sanchez Gomez. 
+The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
+
+## 1. Introduction
+The modern NBA is shaped heavily by analytics, efficiency, and data-driven decision-making. Teams increasingly rely on statistical insights to evaluate player performance, optimize game strategies, and gain competitive advantages. Among the many questions that arise in basketball analytics, one of the most fundamental is:
+
+What statistical skills or attributes actually lead to winning games?
+
+Although basketball is a team sport, game outcomes ultimately reflect patterns in offensive and defensive performance. Understanding which team-level statistics correlate most strongly with winning can benefit coaches, analysts, and front offices by highlighting which areas contribute most to success.
+
+In this project, we analyze all team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
+
+##Research Question
+Which team-level offensive and defensive statistics are most strongly associated with winning NBA games in the 2024–25 season?
+
+##To answer this question, we apply multiple statistical tools, including:
+- Two-sample t-tests to compare offense vs. defense metrics between wins and losses
+- K-means clustering to group team performance styles
+- Logistic regression to predicti game outcomes from key features by turning the variables into binary conditions of win or lose
+
+This multi-method approach allows us to evaluate individual statistical differences, build predictive models, and examine broader team-performance patterns.
+
+
+## 2. Data
+The data used for this analysis was sourced from Kaggle, a popular platform for data sharing that provides publicly available NBA teams' data in their playoffs. The dataset contains player-level box scores for NBA games during the 2024–25 season. Each row represents a single player's performance in one game and includes the offensive and defensive statistics used in our analysis:
+
+Offensive metrics:
+FG (field goals), FGA (field goal attempts), FG%, 3P (three-pointers made), 3PA (three-point attempts), 3P% (three-point percentage), AST (assists), and PTS (points).
+
+Defensive metrics:
+STL (steals), BLK (blocks), TOV (turnovers), DRB (defensive rebounds), and TRB (total rebounds).
+
+The data-cleaning process begins by importing the raw player box scores from the 2024–25 NBA season using read_csv(), which loads the information into a structured data frame that can be inspected for accuracy with head(). Since each row initially represents a single player’s statistics from one game, the next step converts this information into meaningful team summaries. This is accomplished by grouping the data by game date, team, opponent, and game result, then aggregating all player statistics within each group. Using summarise(), field goals, three-pointers, free throws, steals, and blocks are summed with na.rm = TRUE, which removes missing values to prevent statistical distortion. Derived statistics such as field-goal and three-point percentages are calculated, and a new combined defensive metric, “defensive pressure,” is created by adding steals and blocks—capturing overall disruption on defense. After creating team-game totals, ungroup() ensures that no unintended grouping carries into later analysis. A similar transformation produces season-level summaries by grouping by team and counting total wins and losses while averaging shooting percentages and summing defensive metrics and free throws. This process not only cleans the dataset by handling missing values and reducing noisy player-level data, but also generates new performance indicators that represent team strength more accurately, preparing the dataset for statistical testing, clustering, and predictive modeling.
+
+```{r}
+#Data Cleaning 
+raw_database_24_25 <- read_csv("database_24_25.csv")
+head(raw_database_24_25)
+
+```
+
+```{r}
+# TEAM-GAME
+
+team_game <- raw_database_24_25 %>%
+  group_by(Data, Tm, Opp, Res) %>%  
+  summarise(
+    FG = sum(FG, na.rm = TRUE),
+    FGA = sum(FGA, na.rm = TRUE),
+    FG_pct = FG / FGA,
+    
+    `3P` = sum(`3P`, na.rm = TRUE),
+    `3PA` = sum(`3PA`, na.rm = TRUE),
+    `3P_pct` = `3P` / `3PA`,
+    
+    FT = sum(FT, na.rm = TRUE),
+    STL = sum(STL, na.rm = TRUE),
+    BLK = sum(BLK, na.rm = TRUE),
+    
+    defensive_pressure = STL + BLK,
+    points = sum(PTS, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+
+```
+
+```{r}
+head(team_game)
+```
+```{r}
+# TEAM-SEASON
+
+team_season <- team_game %>%
+  group_by(Tm) %>%
+  summarise(
+    wins = sum(Res == "W"),
+    losses = sum(Res == "L"),
+    avg_FG_pct = mean(FG_pct, na.rm = TRUE),
+    avg_3P_pct = mean(`3P_pct`, na.rm = TRUE),
+    total_ft = sum(FT, na.rm = TRUE),
+    total_stl = sum(STL, na.rm = TRUE),
+    total_blk = sum(BLK, na.rm = TRUE),
+    avg_def_pressure = mean(defensive_pressure, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+team_season <- team_season %>% # order by who has the most wins
+  arrange(desc(wins))
+head(team_season)
+```
+
+
+## 3. Exploratory Data Analysis (Tyler)
+
+```{r}
+#Offensive Statistics
+
+```
+
+```{r}
+#Defensive Statistics
+
+
+```
+
+
+## 4. T-Tests (Shafin)
+
+```{r}
+# 3-Point Percentage (Offensive Efficiency)
+
+# H0:There is no difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+# Ha: There is a difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+
+
+t_test_3p <- t.test(`3P_pct` ~ Res , data = team_game)
+t_test_3p
+
+```
+The first t-test compared the average 3-point shooting percentage between games teams won and games they lost. The results show a clear difference: winning teams shot an average of 0.387 from three, while losing teams averaged 0.331. The p-value (< 2.2e-16) shows this difference is statistically significant. This means teams that win tend to shoot much better from three than teams that lose, suggesting that 3-point efficiency is an important offensive factor connected to winning games.
+```{r}
+# Defensive Pressure (Steals + Blocks)
+
+# H0: There is no difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
+# Ha: There is a difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
+
+t_test_def <- t.test(defensive_pressure ~ Res, data = team_game)
+t_test_def
+
+```
+The second t-test compared defensive pressure—defined as steals plus blocks—between wins and losses. Winning teams averaged 14.23 defensive-pressure plays per game, while losing teams averaged 12.43. Again, the p-value (< 2.2e-16) indicates a statistically significant difference. This shows that winning teams typically apply more defensive pressure than losing teams, meaning defensive activity also plays a meaningful role in game outcomes.
+
+
+Overall Conclusion:
+Both t-tests show that offensive and defensive metrics differ significantly between wins and losses. Winning teams tend to shoot more efficiently from three and apply stronger defensive pressure. These findings support the research question by showing that specific team-level statistics—such as 3-point percentage and defensive pressure—are clearly associated with winning NBA games. While the t-tests do not reveal which statistic is the most important, they provide strong evidence that both offense and defense contribute to success.
+
+## 5. K-Clustering (Derek)
+```{r, include = FALSE}
+set.seed(800) # keep clustering consistent
+head(team_season)
+```
+
+Before clustering, we wanted to see the significance of each variable, so we utilized a multiple linear regression model. The model tries to predict the number of wins a team had based on average 3 point make percentage, average field goal make percentage, total free throws made, total number of steals, and total number of blocks a team had. 
+
+As you can see below, the R^2 score of the model is 0.6003, meaning the model can explain 60.03% of variability in the number of wins a team had in the 2024-2025 NBA season. 
+```{r, echo = FALSE}
+# Create model to see which of the variables are most significant
+# Notes on the model:
+# R^2 with all 5: 0.6003
+# R^2 after removing:
+# avg_3P_pct 0.5732
+# avg_FG_pct 0.4993 * 
+# total_ft 0.5986
+# total_stl 0.4749 * 
+# total_blocks 0.5762
+
+nba_model <- lm(wins ~ avg_3P_pct + 
+                  avg_FG_pct + 
+                  total_ft +
+                  total_stl +
+                  total_blk, 
+                data = team_season)
+summary(nba_model)
+```
+As shown above, among the five variables, the factors which had the lowest p-values were average field goal make percentage and total number of steals a team had. While the other factors had higher p-values implying that they may not be as significant, removing them reduced the overall R^2 score of the model. With this in mind, teams were clustered based on all five factors.
+
+To determine how many clusters to use, an elbow test was conducted for stats by game and stats by each team's season.
+```{r, echo = FALSE}
+# conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
+
+#Scaling TEAMs by defensive AND offensive stats by 
+team_scaled <- scale(
+  team_season[, c( # "wins",
+                   "avg_3P_pct", 
+                   "avg_FG_pct", 
+                   "total_ft",
+                   "total_stl", 
+                   "total_blk")])
+#summary(team_scaled)
+
+
+# scaling GAMES stats by defensive AND offensive stats
+team_game_scaled <- scale(
+  team_game[, c(   "3P_pct", 
+                   "FG_pct", 
+                   "FT",
+                   "STL", 
+                   "BLK")])
+```
+
+```{r, echo = FALSE}
+# plot elbow plot of game stats
+wss_game <- sapply(1:10, function(k){
+  kmeans(team_game_scaled, centers = k, nstart = 20)$tot.withinss
+})
+
+plot(1:10, wss_game, type = "b",
+     xlab = "Number of clusters (k)",
+     ylab = "Sum of Squares",
+     main = "Elbow Method for Game Stats")
+# Plot shows k = 3 is the most optimal
+```
+```{r, echo = FALSE}
+# plot elbow test of team stats
+wss <- sapply(1:10, function(k){
+  kmeans(team_scaled, centers = k, nstart = 20)$tot.withinss
+})
+
+plot(1:10, wss, type = "b",
+     xlab = "Number of clusters (k)",
+     ylab = "Sum of Squares",
+     main = "Elbow Method for Team Season Stats")
+# Plot shows k = 3 is the most optimal
+```
+Both of the elbow tests showed that k = 3 would be an appropriate number of clusters.
+```{r, include = FALSE}
+# add cluster column for teams and games
+#summary(team_scaled)
+kmeans_game_result <- kmeans(team_game_scaled, centers = 3)
+
+team_game$cluster <- kmeans_game_result$cluster
+
+kmeans_team_result <- kmeans(team_scaled, centers = 3)
+
+team_season$cluster <- kmeans_team_result$cluster
+
+```
+
+Below is a scatterplot where each point represents a team. They are plotted based on average field goal percentage as well and total steals in the last season. The color of each point represents the cluster they were grouped into.
+
+```{r, echo = FALSE}
+# Plot of Team clusters 
+# Axis of the graph are the 2 most significant factors from model
+plot(team_season$avg_FG_pct, team_season$total_stl,
+     col = team_season$cluster,
+     pch = 19,
+     xlab = "Average Feild Goal Percentage",
+     ylab = "Total Steals",
+     main = "Teams by Total Steals and Field Goal Percentage")
+```
+As you can see, each cluster is defined in some way by their number of steals and/or their field goal performance. To dive deeper into this, we created box plots to examine each cluster's win rate, average field goal percentage, and total number of steals.
+```{r, echo = FALSE}
+# Analyze what sets the team clusters apart
+par(mfrow = c(1, 3)) # 1 row by 3 plots
+colors <- c("red", "blue", "green")
+
+# wins
+boxplot(wins ~ cluster, data = team_season,
+        main = "Wins by Cluster",
+        xlab = "Cluster",
+        ylab = "Number of Wins",
+        col = colors)
+
+# avg_FG_pct
+boxplot(avg_FG_pct ~ cluster, data = team_season,
+        main = "FG% by Cluster",
+        xlab = "Cluster",
+        ylab = "Avg FG%",
+        col = colors)
+# total_stl
+boxplot(total_stl ~ cluster, data = team_season,
+        main = "Total Steals by Cluster",
+        xlab = "Cluster",
+        ylab = "Total Steals",
+        col = colors)
+```
+The box plots show that teams that tend to have higher win rates excel in at least one of the stats. Cluster 2 displays high performance in making their shots, while Cluster 1 showed a high number of steals. Cluster 3 did not excel in either of these categories and suffered lower win rates compared to the other two clusters.
+
+While this finding was very interesting, we were still curious about individual game play, so we clustered and examined individual games as well.
+```{r, echo = FALSE}
+# plot of game stat clusters
+plot(team_game$FG_pct, team_game$STL,
+     col = team_game$cluster,
+     pch = 19,
+     xlab = "FG%",
+     ylab = "Total Steals",
+     main = "Games plotted by FG% and Steals")
+
+```
+As you can see, there are also some distinctions between individual games that can be highlighted by steals and field goals.
+```{r, echo = FALSE}
+# Analyze what sets the GAME clusters apart
+par(mfrow = c(1, 2)) # 1 row by 3 plots
+colors <- c("red", "blue", "green", "yellow")
+
+# wins
+ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Wins and Losses by Cluster",
+       x = "Cluster",
+       y = "Count of Games",
+       fill = "Result")
+
+# avg_FG_pct
+boxplot(FG_pct ~ cluster, data = team_game,
+        main = "FG% by Cluster",
+        xlab = "Cluster",
+        ylab = "Avg FG%",
+        col = colors)
+# total_stl
+boxplot(STL ~ cluster, data = team_game,
+        main = "Steals by Cluster",
+        xlab = "Cluster",
+        ylab = "Total Steals",
+        col = colors)
+```
+When looking at individual games, the trend is still there. When clustered into three groups, there are typically two groups with higher win rates, and one with a lower rate. The two winning groups either show excellence in shot making or stealing the ball, while the losing group struggles to shine with either.
+
+
+## 6. Logistic Regression (Tiffany)
+
+```{r}
+#LOGISTIC REGRESSION MODEL
+
+#Convert results to binary outcome: 1 = Win, 0 = Loss
+team_game <- team_game %>%
+  mutate(win_binary = ifelse(Res == "W", 1, 0))
+
+# Fit logistic regression predicting win/loss
+logit_model <- glm(
+  win_binary ~ FG_pct + `3P_pct` + FT + STL + BLK + defensive_pressure + points,
+  data = team_game,
+  family = binomial
+)
+
+# Display model summary
+summary(logit_model)
+```
+## 7. Goodness of Fit Tests (Tiffany)
+```{r}
+### GOODNESS OF FIT TESTS FOR LOGISTIC REGRESSION ###
+
+# 1. Likelihood Ratio Test (compare model vs null model)
+null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
+anova(null_model, logit_model, test = "Chisq")
+
+# 2. Hosmer–Lemeshow Test (requires ResourceSelection package)
+hoslem.test(team_game$win_binary, fitted(logit_model), g = 10)
+
+# 3. Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
+pR2(logit_model)
+
+# 4. Classification Accuracy and Confusion Matrix
+pred_prob <- predict(logit_model, type = "response")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+
+conf_matrix <- table(
+  Actual = team_game$win_binary,
+  Predicted = pred_class
+)
+conf_matrix
+
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+accuracy
+
+# 5. ROC Curve and AUC
+roc_obj <- roc(team_game$win_binary, pred_prob)
+plot(roc_obj, main = "ROC Curve — Logistic Regression Model")
+auc(roc_obj)
+
+# 6. Brier Score
+brier_score <- mean((team_game$win_binary - pred_prob)^2)
+brier_score
+
+```
+The code begins by creating a binary win/loss variable using `mutate()`, converting `"W"` to 1 and all other results to 0 so that logistic regression can be applied, since it requires a numeric 0/1 outcome. A logistic regression model is then fit using `glm()` with the binomial family, predicting the probability of winning based on field goal percentage, three-point percentage, free throws, steals, blocks, defensive pressure, and points scored. The `summary()` function outputs coefficient estimates, standard errors, z-values, and p-values, which indicate how strongly each predictor influences the odds of winning. To evaluate the model’s goodness of fit, a null model is first created with only an intercept, and a likelihood ratio test compares it to the full model via `anova()`, where a significant chi-square p-value suggests the predictors collectively improve model fit. The Hosmer–Lemeshow test is then run to assess calibration; a non-significant p-value indicates the predicted probabilities align well with observed outcomes. Pseudo-R-squared values (McFadden, Cox & Snell, and Nagelkerke) are computed to give a sense of overall explanatory power, though these values are typically lower than linear regression R². Predicted win probabilities are generated using `predict()`, converted into win/loss predictions at a 0.5 threshold, and evaluated with a confusion matrix, from which accuracy is calculated as the proportion of correctly classified games. The ROC curve and AUC are then produced using the pROC package; the ROC curve visualizes the model’s ability to distinguish wins from losses at varying thresholds, while the AUC quantifies discrimination quality (with values closer to 1 indicating stronger performance). Finally, the Brier score is computed as the mean squared difference between actual outcomes and predicted probabilities, with lower values indicating better calibrated and more accurate probability estimates.
+
+
+Team Contributions by individual:
+Derek:
+Shafin:
+Tiffany:
+Tyler:
