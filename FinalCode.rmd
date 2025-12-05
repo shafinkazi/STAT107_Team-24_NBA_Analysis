@@ -113,7 +113,7 @@ team_season <- team_game %>%
 ```
 
 
-## 3. Exploratory Data Analysis (Tiffany)
+## 3. Exploratory Data Analysis (Tyler)
 
 ```{r}
 #Offensive Statistics
@@ -243,3 +243,9 @@ brier_score <- mean((team_game$win_binary - pred_prob)^2)
 brier_score
 
 ```
+
+Team Contributions by individual:
+Derek:
+Shafin:
+Tiffany:
+Tyler:
