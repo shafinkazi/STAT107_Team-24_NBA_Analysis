@@ -225,6 +225,7 @@ plot(1:10, game_elb_test, type = "b",
      main = "Elbow Method for Game Stats")
 # Plot shows k = 3 is the most optimal
 ```
+
 ```{r, echo = FALSE}
 # plot elbow test of team stats
 season_elb_test <- sapply(1:10, function(k){
@@ -316,6 +317,7 @@ ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
        y = "Count of Games",
        fill = "Result")
 ```
+
 ```{r, echo = FALSE}
 # boxplot for FG% and STL by cluster
 par(mfrow = c(1, 2)) # 1 row by 3 plots
