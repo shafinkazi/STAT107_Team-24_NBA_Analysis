@@ -47,23 +47,22 @@ This is the midway report submitted earlier in the quarter. It is no longer used
 To reproduce all results in this project, follow the steps below:
 
 1. Download or clone the repository. You can clone using:  
-   git clone https://github.com/shafinkazi/STAT107_Team-24_NBA_Analysis.git 
+   git clone https://github.com/shafinkazi/STAT107_Team-24_NBA_Analysis.git
 
 2. Open the project folder in RStudio. Make sure all files remain in their original structure.
 
-3. Load all required R packages by running:  
-   `source("00_requirements.R")`
+3. Run `source("00_requirements.R")` to load all required packages.  
+   If any packages are missing, install them before continuing.
 
-4. Load the dataset. Ensure the file `database_24_25.csv` is located in the project directory.
+4. Run the Data section of the report to load and prepare the dataset.
 
-5. Run the analysis steps in order, following this sequence:  
-   - Data cleaning and processing  
+5. Run the analysis steps in the following order:  
    - Exploratory Data Analysis (EDA)  
    - T-tests  
    - K-means clustering  
-   - Logistic regression and goodness-of-fit tests  
+   - Logistic regression and goodness-of-fit tests
 
-6. Knit the final report. Open `FinalReport.Rmd` in RStudio and click **Knit** to generate the final PDF containing all analysis, visualizations, and conclusions.
+
 
 
 
