@@ -349,15 +349,9 @@ null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
 anova(null_model, logit_model, test = "Chisq")
 
 # 2. Hosmer–Lemeshow Test (requires ResourceSelection package)
-if(!require(ResourceSelection)) install.packages("ResourceSelection")
-library(ResourceSelection)
-
 hoslem.test(team_game$win_binary, fitted(logit_model), g = 10)
 
 # 3. Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
-if(!require(pscl)) install.packages("pscl")
-library(pscl)
-
 pR2(logit_model)
 
 # 4. Classification Accuracy and Confusion Matrix
@@ -374,9 +368,6 @@ accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
 accuracy
 
 # 5. ROC Curve and AUC
-if(!require(pROC)) install.packages("pROC")
-library(pROC)
-
 roc_obj <- roc(team_game$win_binary, pred_prob)
 plot(roc_obj, main = "ROC Curve — Logistic Regression Model")
 auc(roc_obj)
@@ -386,6 +377,8 @@ brier_score <- mean((team_game$win_binary - pred_prob)^2)
 brier_score
 
 ```
+The code begins by creating a binary win/loss variable using `mutate()`, converting `"W"` to 1 and all other results to 0 so that logistic regression can be applied, since it requires a numeric 0/1 outcome. A logistic regression model is then fit using `glm()` with the binomial family, predicting the probability of winning based on field goal percentage, three-point percentage, free throws, steals, blocks, defensive pressure, and points scored. The `summary()` function outputs coefficient estimates, standard errors, z-values, and p-values, which indicate how strongly each predictor influences the odds of winning. To evaluate the model’s goodness of fit, a null model is first created with only an intercept, and a likelihood ratio test compares it to the full model via `anova()`, where a significant chi-square p-value suggests the predictors collectively improve model fit. The Hosmer–Lemeshow test is then run to assess calibration; a non-significant p-value indicates the predicted probabilities align well with observed outcomes. Pseudo-R-squared values (McFadden, Cox & Snell, and Nagelkerke) are computed to give a sense of overall explanatory power, though these values are typically lower than linear regression R². Predicted win probabilities are generated using `predict()`, converted into win/loss predictions at a 0.5 threshold, and evaluated with a confusion matrix, from which accuracy is calculated as the proportion of correctly classified games. The ROC curve and AUC are then produced using the pROC package; the ROC curve visualizes the model’s ability to distinguish wins from losses at varying thresholds, while the AUC quantifies discrimination quality (with values closer to 1 indicating stronger performance). Finally, the Brier score is computed as the mean squared difference between actual outcomes and predicted probabilities, with lower values indicating better calibrated and more accurate probability estimates.
+
 
 Team Contributions by individual:
 Derek:
