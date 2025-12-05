@@ -404,9 +404,14 @@ Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluat
 
 
 ## 8. Conclusion
-  - In terms of offense, your main goal should be to make your shots. While free throws and three pointers contribute to winning, the logistic regression model showed feild goal percentage was the most significant factor in terms of offense, as well as overall stats. It had the lowest p-value and was a strong indicator of whether or not a team would win a game.
-  - Of the defensive stats, steals were the highest contributor towards winning games. While stopping an opponents shot and lowering their feild goal percentage is important, stopping them before they get to the basket and ensuring a possession for your own team is much more beneficial.
-  - As shown by the k means clustering, you don't have to excel in everything to win a game. Many winning teams opted to emphasize either offense or defense rather than a rounded approach, which led to more victories last season.
+- In terms of offense, a team’s main goal should be to make its shots. While free throws and three-pointers both contribute to winning, the logistic regression model showed that field goal percentage was the most significant offensive factor, as well as one of the strongest overall predictors. It had one of the lowest p-values and was a strong indicator of whether or not a team would win a game.
+
+- Of the defensive stats, steals were the highest contributor toward winning games. While blocking shots and lowering an opponent’s field goal percentage is important, stopping them before they get to the basket and creating extra possessions for your own team through steals is even more beneficial.
+
+- The hypothesis tests support these findings by showing clear differences between wins and losses. Winning teams had significantly higher three-point percentages and generated more defensive pressure (steals + blocks) than losing teams. This means that both efficient shooting from beyond the arc and active defense are statistically associated with a higher chance of winning NBA games.
+
+- As shown by the k-means clustering, you don’t have to excel in every category to win. Many winning teams emphasized either strong shooting or disruptive defense rather than a perfectly balanced approach, and this specialization still led to more victories over the 2024–25 season.
+ 
 
 Team Contributions by individual:
 Derek: Data cleaning, K means clustering, linear regression model, clustering analysis
