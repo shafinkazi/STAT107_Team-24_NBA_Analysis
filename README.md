@@ -1,5 +1,5 @@
 ## STAT107 Final Project: NBA Team Statistics and Winning  
-Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong  
+Team 24: Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong  
 Course: STAT 107 — Data Science  
 Instructor: Dr. Jose Angel Sanchez Gomez  
 Quarter: Fall 2025  
@@ -33,7 +33,7 @@ This file provides an overview of the repository, describes each file, and expla
 This file contains the main NBA dataset used in the project. It includes player-level statistics for the 2024–25 season, which we aggregate into team-level summaries for analysis.
 
 **00_requirements.R**  
-This file loads all required R packages for the project so the analysis can run smoothly without repeatedly calling `library()` in multiple files.
+This file loads all required R packages for the project so the analysis can run smoothly without repeatedly calling `library()`.
 
 **FinalReport.Rmd**  
 This is the complete final project report. It contains the introduction, data description, exploratory analysis, statistical tests, modeling, results, and conclusions.
