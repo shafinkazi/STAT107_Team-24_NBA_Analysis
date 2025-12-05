@@ -26,7 +26,7 @@ The final written report is included in **FinalReport.Rmd** and its knitted PDF.
 
 # Repository Structure  
 
-**README.Rmd / README.md**  
+**README.Rmd**  
 This file provides an overview of the repository, describes each file, and explains how to reproduce the analysis.
 
 **database_24_25.csv**  
