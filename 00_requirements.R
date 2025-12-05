@@ -59,3 +59,6 @@ if (!require(rmarkdown)) {
   library(rmarkdown)
 }
 
+if(!require(pROC)) install.packages("pROC")
+library(pROC)
+
