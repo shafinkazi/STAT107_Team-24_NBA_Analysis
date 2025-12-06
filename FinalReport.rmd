@@ -424,7 +424,7 @@ When looking at individual games, the trend is still there. When clustered into 
 
 ## 6. Logistic Regression (Tiffany)
 
-```{r}
+```{r echo = FALSE}
 # LOGISTIC REGRESSION MODEL
 # Convert results to binary outcome: 1 = Win, 0 = Loss
 team_game <- team_game %>%
@@ -460,7 +460,7 @@ Blocks (BLK) also have a notable positive effect at 0.176, p < 2e-11. Each block
 Points has a small significant coefficient at 0.0604, p < 2e-12. Each additional point increases the odds of winning by exp(0.0604) equal to 1.062. Although getting more points is obviously related to winning, its effect is reduced because shooting efficiency and other metrics already explain the scoring variety.
 
 ## 7. Goodness of Fit Tests (Tiffany)
-```{r}
+```{r echo = FALSE}
 # GOODNESS OF FIT TESTS FOR LOGISTIC REGRESSION
 #1. Likelihood Ratio Test (compare model vs null model)
 null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
