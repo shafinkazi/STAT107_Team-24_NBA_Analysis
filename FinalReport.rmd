@@ -89,6 +89,7 @@ team_game <- raw_database_24_25 %>%
 
 ```
 
+
 ```{r}
 head(team_game)
 ```
@@ -121,13 +122,92 @@ head(team_season)
 ```{r}
 #Offensive Statistics
 
+# Histogram: Field Goal Percentage (FG%)
+ggplot(team_game, aes(x = FG_pct)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black") +
+  labs(
+    title = "Distribution of Team Field Goal Percentage",
+    x = "Field Goal Percentage",
+    y = "Frequency"
+  ) +
+  theme_minimal()
 ```
+
+```{r}
+# Boxplot: Three-Point Percentage (3P%)
+ggplot(team_game, aes(y = `3P_pct`)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(
+    title = "Boxplot of Team Three-Point Percentage",
+    y = "Three-Point Percentage"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Scatter Plot: Total Points Scored by Game
+ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
+  geom_point(color = "lightgreen", alpha = 0.7) +
+  labs(
+    title = "Total Points Scored by Game",
+    x = "Game Number",
+    y = "Points Scored"
+  ) +
+  theme_minimal()
+
+
+```
+
 
 ```{r}
 #Defensive Statistics
 
+# Histogram: Total Steals Per Game
+ggplot( team_game, aes(x = STL)) +
+  geom_histogram(bins = 30, fill = "purple", color = "black" ) +
+  labs(
+    title = "Distribution of Team Steals Per Game",
+    x = "Steals",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# Boxplot of Blocks by Game Outcome
+ggplot(team_game, aes(x = Res, y = BLK, fill = Res)) +
+  geom_boxplot() +
+  labs(
+    title = "Blocks Per Game by Game Outcome",
+    x = "Game Result",
+    y = "Blocks"
+  ) +
+  scale_fill_manual(values = c("W" = "lightblue", "L" = "salmon")) +
+  theme_minimal()
+
 
 ```
+
+```{r}
+# Scatter Plot: Defensive Pressure by Game
+ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
+  geom_point(color = "lightcoral", alpha = 0.7) +
+  labs(
+    title = "Defensive Pressure (Steals + Blocks) by Game — 2024–25 NBA Season",
+    x = "Game Number",
+    y = "Defensive Pressure (STL + BLK)"
+  ) +
+  theme_minimal()
+
+```
+
+## Exploratory Data Analysis write up
+
+# Offensive Statistics
+The three offensive statistics show how NBA teams scored during the 2024–25 season. The field-goal percentage plot shows that most teams shoot close to the league average, so there aren’t huge differences in basic shooting skill between teams. The three-point percentage boxplot shows more variation, which means some teams are really good at shooting threes while others aren’t as strong. The scatter plot of points scored by game shows that most teams score a normal amount of points, but a few teams score a lot more than everyone else. Looking closer, teams that score a lot usually have good shooters who can make both mid-range and long-range shots consistently. Teams that struggle in points often rely on fewer players for scoring, which can make them easier to defend. The data also shows that even teams with average shooting percentages can score a lot if they take more shots or get more free throws. Overall, these offensive charts show that making threes, scoring efficiently, and taking lots of good shots are the main things that separate strong offenses from average ones.
+
+#Defensive Statistics
+The defensive statistics show clear differences in how NBA teams slow down their opponents. In the defensive pressure histogram (steals + blocks), most teams usually get between 6 and 12 combined steals and blocks per game, but a smaller group of teams regularly got 15 or more, showing they play much more aggressive defense. The steals histogram shows that some teams are strong at forcing turnovers by grabbing 8–10 steals per game, while others stay closer to 4–6 steals, meaning they play a less risky style. For example, The Atlanta Hawks had a lot of steals because they had a player named Dyson Daniels who lead the league in steals because he was always being agressive and attacking the ball. The blocks histogram also shows big differences: teams with good rim protectors often reach 6 or more blocks, while others usually stay below 3. For example, a team like the Spurs got a lot of blocks because they have a player in Victor wembanyama who led the whole NBA in blocks last season. Overall, these defensive charts show that defensive performance has more variation than offense, and teams that produce a lot of steals and blocks stand out the most on that side of the game. 
 
 
 ## 4. T-Tests (Shafin)
@@ -180,13 +260,13 @@ As you can see below, the R^2 score of the model is 0.6003, meaning the model ca
 # total_stl 0.4749 * 
 # total_blocks 0.5762
 
-nba_model <- lm(wins ~ avg_3P_pct + 
+season_model <- lm(wins ~ avg_3P_pct + 
                   avg_FG_pct + 
                   total_ft +
                   total_stl +
                   total_blk, 
                 data = team_season)
-summary(nba_model)
+summary(season_model)
 ```
 As shown above, among the five variables, the factors which had the lowest p-values were average field goal make percentage and total number of steals a team had. While the other factors had higher p-values implying that they may not be as significant, removing them reduced the overall R^2 score of the model. With this in mind, teams were clustered based on all five factors.
 
@@ -195,14 +275,14 @@ To determine how many clusters to use, an elbow test was conducted for stats by 
 # conduct elbow test to determine optimal number of means (k) for TEAM and GAME stats
 
 #Scaling TEAMs by defensive AND offensive stats by 
-team_scaled <- scale(
+season_scaled <- scale(
   team_season[, c( # "wins",
                    "avg_3P_pct", 
                    "avg_FG_pct", 
                    "total_ft",
                    "total_stl", 
                    "total_blk")])
-#summary(team_scaled)
+#summary(season_scaled)
 
 
 # scaling GAMES stats by defensive AND offensive stats
@@ -216,23 +296,24 @@ team_game_scaled <- scale(
 
 ```{r, echo = FALSE}
 # plot elbow plot of game stats
-wss_game <- sapply(1:10, function(k){
+game_elb_test <- sapply(1:10, function(k){
   kmeans(team_game_scaled, centers = k, nstart = 20)$tot.withinss
 })
 
-plot(1:10, wss_game, type = "b",
+plot(1:10, game_elb_test, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
      main = "Elbow Method for Game Stats")
 # Plot shows k = 3 is the most optimal
 ```
+
 ```{r, echo = FALSE}
 # plot elbow test of team stats
-wss <- sapply(1:10, function(k){
-  kmeans(team_scaled, centers = k, nstart = 20)$tot.withinss
+season_elb_test <- sapply(1:10, function(k){
+  kmeans(season_scaled, centers = k, nstart = 20)$tot.withinss
 })
 
-plot(1:10, wss, type = "b",
+plot(1:10, season_elb_test, type = "b",
      xlab = "Number of clusters (k)",
      ylab = "Sum of Squares",
      main = "Elbow Method for Team Season Stats")
@@ -241,14 +322,14 @@ plot(1:10, wss, type = "b",
 Both of the elbow tests showed that k = 3 would be an appropriate number of clusters.
 ```{r, include = FALSE}
 # add cluster column for teams and games
-#summary(team_scaled)
+#summary(season_scaled)
 kmeans_game_result <- kmeans(team_game_scaled, centers = 3)
 
 team_game$cluster <- kmeans_game_result$cluster
 
-kmeans_team_result <- kmeans(team_scaled, centers = 3)
+kmeans_season_result <- kmeans(season_scaled, centers = 3)
 
-team_season$cluster <- kmeans_team_result$cluster
+team_season$cluster <- kmeans_season_result$cluster
 
 ```
 
@@ -306,9 +387,9 @@ plot(team_game$FG_pct, team_game$STL,
 As you can see, there are also some distinctions between individual games that can be highlighted by steals and field goals.
 ```{r, echo = FALSE}
 # Analyze what sets the GAME clusters apart
-par(mfrow = c(1, 2)) # 1 row by 3 plots
 colors <- c("red", "blue", "green", "yellow")
 
+# Barplot for wins and losses by cluster
 # wins
 ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
   geom_bar(position = "dodge") +
@@ -316,7 +397,11 @@ ggplot(team_game, aes(x = factor(cluster), fill = Res)) +
        x = "Cluster",
        y = "Count of Games",
        fill = "Result")
+```
 
+```{r, echo = FALSE}
+# boxplot for FG% and STL by cluster
+par(mfrow = c(1, 2)) # 1 row by 3 plots
 # avg_FG_pct
 boxplot(FG_pct ~ cluster, data = team_game,
         main = "FG% by Cluster",
@@ -398,8 +483,22 @@ The Likelihood Ratio Test comparing the fitted model to the null model shows a r
 
 Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluates how well the predicted probabilities align with observed outcomes across deciles of predicted risk. The test result of X-squared = 12.196, p = 0.1427 does not indicate a statistically significant lack of fit, meaning there is no evidence that the model over- or under-predicts win probability for any group of games. The model’s predicted probabilities match the real distribution of outcomes. The pseudo R-squared values each suggest a strong fit for regression because they account for variation in win probability.
 
+
+## 8. Conclusion
+  - In terms of offense, your main goal should be to make your shots. While free throws and three pointers contribute to winning, the logistic regression model showed feild goal percentage was the most significant factor in terms of offense, as well as overall stats. It had the lowest p-value and was a strong indicator of whether or not a team would win a game.
+  - Of the defensive stats, steals were the highest contributor towards winning games. While stopping an opponents shot and lowering their feild goal percentage is important, stopping them before they get to the basket and ensuring a possession for your own team is much more beneficial.
+  - As shown by the k means clustering, you don't have to excel in everything to win a game. Many winning teams opted to emphasize either offense or defense rather than a rounded approach, which led to more victories last season.
+- In terms of offense, a team’s main goal should be to make its shots. While free throws and three-pointers both contribute to winning, the logistic regression model showed that field goal percentage was the most significant offensive factor, as well as one of the strongest overall predictors. It had one of the lowest p-values and was a strong indicator of whether or not a team would win a game.
+
+- Of the defensive stats, steals were the highest contributor toward winning games. While blocking shots and lowering an opponent’s field goal percentage is important, stopping them before they get to the basket and creating extra possessions for your own team through steals is even more beneficial.
+
+- The hypothesis tests support these findings by showing clear differences between wins and losses. Winning teams had significantly higher three-point percentages and generated more defensive pressure (steals + blocks) than losing teams. This means that both efficient shooting from beyond the arc and active defense are statistically associated with a higher chance of winning NBA games.
+
+- As shown by the k-means clustering, you don’t have to excel in every category to win. Many winning teams emphasized either strong shooting or disruptive defense rather than a perfectly balanced approach, and this specialization still led to more victories over the 2024–25 season.
+ 
+
 Team Contributions by individual:
-Derek:
+Derek: Data cleaning, K means clustering, linear regression model, clustering analysis
 Shafin:
 Tiffany:
 Tyler:
