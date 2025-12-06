@@ -3,8 +3,8 @@ title: "STAT 107 Final Project: NBA Team Statistics and Winning"
 author: "Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong"
 date: "Due: 2025-12-05"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -120,7 +120,7 @@ head(team_season)
 
 ## 3. Exploratory Data Analysis (Tyler)
 
-```{r}
+```{r, echo = FALSE}
 #Offensive Statistics
 
 # Histogram: Field Goal Percentage (FG%)
@@ -134,7 +134,7 @@ ggplot(team_game, aes(x = FG_pct)) +
   theme_minimal()
 ```
 This Histogram plot shows how often different shooting percentages occur across games. Most games fall around a middle FG% range, with fewer games at very low or very high percentages.
-```{r}
+```{r, echo = FALSE}
 # Boxplot: Three-Point Percentage (3P%)
 ggplot(team_game, aes(y = `3P_pct`)) +
   geom_boxplot(fill = "skyblue", color = "black") +
@@ -145,7 +145,7 @@ ggplot(team_game, aes(y = `3P_pct`)) +
   theme_minimal()
 ```
 This boxplot shows the spread and variability of three-point shooting. We can see how consistent or inconsistent teams are from beyond the arc, and whether there are games with unusually good or bad three-point shooting.
-```{r}
+```{r, echo = FALSE}
 # Scatter Plot: Total Points Scored by Game
 ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
   geom_point(color = "lightgreen", alpha = 0.7) +
@@ -160,7 +160,7 @@ ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
 ```
 This scatter plot shows how many points teams scored in each game across the season. It helps us see whether scoring is usually clustered in a typical range or if there are many high- or low-scoring outlier games.
 
-```{r}
+```{r, echo = FALSE}
 #Defensive Statistics
 
 # Histogram: Total Steals Per Game
@@ -175,7 +175,7 @@ ggplot( team_game, aes(x = STL)) +
 ```
 This histogram shows how many steals teams generate per game. It highlights whether most games have only a few steals or whether high-steal games are common.
 
-```{r}
+```{r, echo = FALSE}
 # Boxplot of Blocks by Game Outcome
 ggplot(team_game, aes(x = Res, y = BLK, fill = Res)) +
   geom_boxplot() +
@@ -190,7 +190,7 @@ ggplot(team_game, aes(x = Res, y = BLK, fill = Res)) +
 
 ```
 This boxplot compares the distribution of blocks in wins versus losses. It lets us see if winning games tend to have more blocks than losing games.
-```{r}
+```{r, echo = FALSE}
 # Scatter Plot: Defensive Pressure by Game
 ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
   geom_point(color = "lightcoral", alpha = 0.7) +
@@ -215,7 +215,12 @@ The defensive statistics reveal meaningful differences in how teams disrupt thei
 
 ## 4. T-Tests (Shafin)
 
-```{r}
+### 3-Point Percentage (Offensive Efficiency)
+
+### H0:There is no difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+### Ha: There is a difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
+
+```{r, echo = FALSE}
 # 3-Point Percentage (Offensive Efficiency)
 
 # H0:There is no difference in the average 3-point shooting percentage (3P%) between games that teams win and games that teams lose.
@@ -227,7 +232,12 @@ t_test_3p
 
 ```
 The first t-test compared the average 3-point shooting percentage between games teams won and games they lost. The results show a clear difference: winning teams shot an average of 0.387 from three, while losing teams averaged 0.331. The p-value (< 2.2e-16) shows this difference is statistically significant. This means teams that win tend to shoot much better from three than teams that lose, suggesting that 3-point efficiency is an important offensive factor connected to winning games.
-```{r}
+
+### Defensive Pressure (Steals + Blocks)
+
+### H0: There is no difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
+### Ha: There is a difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
+```{r, echo = FALSE}
 # Defensive Pressure (Steals + Blocks)
 
 # H0: There is no difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
