@@ -41,6 +41,8 @@ This is the complete final project report. It contains the introduction, data de
 **STAT107MidwayReport.Rmd**  
 This is the midway report submitted earlier in the quarter. It is no longer used for the final analysis but is included for reference.
 
+**STAT 107 Final Project: NBA Team Statistics and Winning.pdf**
+This is our report in a PDF.
 ---
 
 # How to Reproduce the Analysis  
@@ -61,6 +63,13 @@ To reproduce all results in this project, follow the steps below:
    - T-tests  
    - K-means clustering  
    - Logistic regression and goodness-of-fit tests
+
+# Team Contributions by individual:
+- Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
+- Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
+- Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd
+- Tyler: Offensive and Defensive EDA/EDA Analysis
+
 
 
 
