@@ -38,11 +38,11 @@ This file loads all required R packages for the project so the analysis can run 
 **FinalReport.Rmd**  
 This is the complete final project report. It contains the introduction, data description, exploratory analysis, statistical tests, modeling, results, and conclusions.
 
-**STAT 107 Final Project: NBA Team Statistics and Winning.pdf**
-This is our final report.
-
 **STAT107MidwayReport.Rmd**  
 This is the midway report submitted earlier in the quarter. It is no longer used for the final analysis but is included for reference.
+
+**STAT 107 Final Project/ NBA Team Statistics and Winning**  
+This is our final report.
 
 ---
 
