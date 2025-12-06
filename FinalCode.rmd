@@ -129,32 +129,33 @@ ggplot(team_game, aes(x = FG_pct)) +
 
 ```
 ```{r}
-# Histogram: Three-Point Percentage (3P%)
-ggplot(team_game, aes(x = `3P_pct`)) +
-  geom_histogram(bins = 30, fill = "orange", color = "black") +
+# Boxplot: Three-Point Percentage (3P%)
+ggplot(team_game, aes(y = `3P_pct`)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(
-    title = "Distribution of Team Three-Point Percentage",
-    x = "Three-Point Percentage",
-    y = "Frequency"
+    title = "Boxplot of Team Three-Point Percentage",
+    y = "Three-Point Percentage"
   ) +
   theme_minimal()
 
 ```
 
 ```{r}
-# Histogram: Total Points Scored in game
-ggplot(team_game, aes(x = points)) +
-  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
-   labs(
-    title = "Distribution of Total Points Scored",
-    x = "Points",
-    y = "Frequency"
+# Scatter Plot: Total Points Scored by Game
+ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
+  geom_point(color = "lightgreen", alpha = 0.7) +
+  labs(
+    title = "Total Points Scored by Game",
+    x = "Game Number",
+    y = "Points Scored"
   ) +
   theme_minimal()
+
+
 ```
 ```{r}
 # Defensive Statistics
-# Histogram: Total Blocks Per Game
+# Histogram: Total Steals Per Game
 ggplot( team_game, aes(x = STL)) +
   geom_histogram(bins = 30, fill = "purple", color = "black" ) +
   labs(
@@ -167,25 +168,28 @@ ggplot( team_game, aes(x = STL)) +
 
 
 ```{r}
-# Histogram: Total Blocks Per Game
-ggplot(team_game, aes(x = BLK)) +
-  geom_histogram(bins = 30, fill = "lightblue", color = "black") +
+# Boxplot of Blocks by Game Outcome
+ggplot(team_game, aes(x = Res, y = BLK, fill = Res)) +
+  geom_boxplot() +
   labs(
-    title = "Distribution of Team Blocks Per Game",
-    x = "Blocks",
-    y = "Frequency"
+    title = "Blocks Per Game by Game Outcome",
+    x = "Game Result",
+    y = "Blocks"
   ) +
+  scale_fill_manual(values = c("W" = "lightblue", "L" = "salmon")) +
   theme_minimal()
+
+
 ```
 
 ```{r}
-# Histogram: Defensive Pressure (Steals + Blocks)
-ggplot(team_game, aes(x = defensive_pressure)) +
-  geom_histogram(bins = 30, fill = "lightcoral", color = "black") +
+# Scatter Plot: Defensive Pressure by Game
+ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
+  geom_point(color = "lightcoral", alpha = 0.7) +
   labs(
-    title = "Distribution of Defensive Pressure (Steals + Blocks) — 2024–25 NBA Season",
-    x = "Defensive Pressure (STL + BLK)",
-    y = "Number of Games"
+    title = "Defensive Pressure (Steals + Blocks) by Game — 2024–25 NBA Season",
+    x = "Game Number",
+    y = "Defensive Pressure (STL + BLK)"
   ) +
   theme_minimal()
 
@@ -194,7 +198,7 @@ ggplot(team_game, aes(x = defensive_pressure)) +
 ## Exploratory Data Analysis write up
 ```{r}
 # Offensive Statistics
-The three offensive statistics show well NBA teams scored during the 2024-25 season. The field-goal percentage histogram shows that most teams shoot about the same, staying close to the league average. This means there aren’t huge variations in basic shooting skill from team to team. The three-point percentage histogram is more spread out, which shows that some teams are really good at shooting threes while others aren’t as strong. The points-scored histogram shows that most teams score around a normal amount, but a few teams score a lot more than everyone else. Overall, these offensive charts show that shooting threes and scoring lots of points are the biggest things that separate good offenses from average ones.
+The three offensive statistics show how NBA teams scored during the 2024–25 season. The field-goal percentage plot shows that most teams shoot close to the league average, so there aren’t huge differences in basic shooting skill between teams. The three-point percentage boxplot shows more variation, which means some teams are really good at shooting threes while others aren’t as strong. The scatter plot of points scored by game shows that most teams score a normal amount of points, but a few teams score a lot more than everyone else. Looking closer, teams that score a lot usually have good shooters who can make both mid-range and long-range shots consistently. Teams that struggle in points often rely on fewer players for scoring, which can make them easier to defend. The data also shows that even teams with average shooting percentages can score a lot if they take more shots or get more free throws. Overall, these offensive charts show that making threes, scoring efficiently, and taking lots of good shots are the main things that separate strong offenses from average ones.
 
 #Defensive Statistics
 The defensive statistics show clear differences in how NBA teams slow down their opponents. In the defensive pressure histogram (steals + blocks), most teams usually get between 6 and 12 combined steals and blocks per game, but a smaller group of teams regularly got 15 or more, showing they play much more aggressive defense. The steals histogram shows that some teams are strong at forcing turnovers by grabbing 8–10 steals per game, while others stay closer to 4–6 steals, meaning they play a less risky style. For example, The Atlanta Hawks had a lot of steals because they had a player named Dyson Daniels who lead the league in steals because he was always being agressive and attacking the ball. The blocks histogram also shows big differences: teams with good rim protectors often reach 6 or more blocks, while others usually stay below 3. For example, a team like the Spurs got a lot of blocks because they have a player in Victor wembanyama who led the whole NBA in blocks last season. Overall, these defensive charts show that defensive performance has more variation than offense, and teams that produce a lot of steals and blocks stand out the most on that side of the game. 
