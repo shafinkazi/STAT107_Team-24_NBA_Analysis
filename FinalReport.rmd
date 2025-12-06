@@ -472,6 +472,10 @@ hoslem.test(team_game$win_binary, fitted(logit_model), g = 10)
 #3. Pseudo R-squared values (McFadden, Cox & Snell, Nagelkerke)
 pR2(logit_model)
 
+# 4. Prediction from regression model
+pred_prob <- predict(logit_model, type = "response")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+
 #5. ROC Curve and AUC
 roc_obj <- roc(team_game$win_binary, pred_prob)
 plot(roc_obj, main = "ROC Curve — Logistic Regression Model")
