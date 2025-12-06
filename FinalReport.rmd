@@ -1,11 +1,19 @@
 ---
-title: "STAT 107 Final Project: NBA Team Statistics and Winning"
-author: "Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong"
-date: "Due: 2025-12-05"
+title: "<center>NBA Team Statistics and Winning</center>"
+author: "<center>Team 24: Derek de Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong</center>"
+date: "<center>2025-12-05</center>"
 output:
-  html_document: default
+  html_document:
+  df_print: default
   pdf_document: default
 ---
+<center>
+**STAT107 Final Project**  
+**University of California, Riverside**
+</center>
+---
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -16,8 +24,8 @@ knitr::opts_chunk$set(
 
 source("00_requirements.R")
 ```
-Abstract:
-Analytics and data-driven metrics have transformed modern NBA strategy, influencing roster decisions, offensive schemes, and defensive priorities. While many statistics are tracked in every game, not all contribute equally to winning. This study examines which team-level offensive and defensive statistics are most strongly associated with winning NBA games during the 2024–25 season.
+<center>Abstract</center>
+  Analytics and data-driven metrics have transformed modern NBA strategy, influencing roster decisions, offensive schemes, and defensive priorities. While many statistics are tracked in every game, not all contribute equally to winning. This study examines which team-level offensive and defensive statistics are most strongly associated with winning NBA games during the 2024–25 season.
 
 Using cleaned box score data transformed into team aggregates, we evaluate the effect of shooting efficiency, three-point performance, free throws, defensive pressure (blocks + steals), and total points. We apply hypothesis testing, unsupervised clustering, and logistic regression to measure statistical significance, group team styles, and predict game outcomes. Results show that shooting efficiency (FG%) and defensive pressure are highly predictive of winning, while three-point accuracy contributes strongly but less consistently across teams. Logistic regression confirms that field-goal percentage and total points hold the highest predictive power with above-average classification accuracy.
 
@@ -59,14 +67,14 @@ STL (steals), BLK (blocks), TOV (turnovers), DRB (defensive rebounds), and TRB (
 
 The data-cleaning process begins by importing the raw player box scores from the 2024–25 NBA season using read_csv(), which loads the information into a structured data frame that can be inspected for accuracy with head(). Since each row initially represents a single player’s statistics from one game, the next step converts this information into meaningful team summaries. This is accomplished by grouping the data by game date, team, opponent, and game result, then aggregating all player statistics within each group. Using summarise(), field goals, three-pointers, free throws, steals, and blocks are summed with na.rm = TRUE, which removes missing values to prevent statistical distortion. Derived statistics such as field-goal and three-point percentages are calculated, and a new combined defensive metric, “defensive pressure,” is created by adding steals and blocks—capturing overall disruption on defense. After creating team-game totals, ungroup() ensures that no unintended grouping carries into later analysis. A similar transformation produces season-level summaries by grouping by team and counting total wins and losses while averaging shooting percentages and summing defensive metrics and free throws. This process not only cleans the dataset by handling missing values and reducing noisy player-level data, but also generates new performance indicators that represent team strength more accurately, preparing the dataset for statistical testing, clustering, and predictive modeling.
 
-```{r}
+```{r, echo=FALSE}
 #Data Cleaning 
 raw_database_24_25 <- read_csv("database_24_25.csv")
 head(raw_database_24_25)
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 # TEAM-GAME
 
 team_game <- raw_database_24_25 %>%
@@ -97,7 +105,7 @@ team_game <- raw_database_24_25 %>%
 head(team_game)
 ```
 
-```{r}
+```{r, echo=FALSE}
 # TEAM-SEASON
 
 team_season <- team_game %>%
@@ -120,7 +128,7 @@ head(team_season)
 ```
 
 
-## 3. Exploratory Data Analysis (Tyler)
+## 3. Exploratory Data Analysis
 
 ```{r, echo = FALSE}
 #Offensive Statistics
@@ -206,7 +214,7 @@ ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
 ```
 This scatter plot shows how combined defensive pressure changes from game to game. It helps visualize how often teams produce a lot of steals and blocks in the same game versus games with low defensive disruption.
 
-## Exploratory Data Analysis write up
+## Exploratory Data Analysis
 
 ### Offensive Statistics
 The offensive statistics provide a clear picture of how teams scored throughout the 2024–25 season. The histogram of field-goal percentage shows that most team-game performances cluster around a central range, meaning shooting efficiency tends to stay relatively consistent across games with fewer extreme highs or lows. In contrast, the boxplot of three-point percentage displays a wider spread, indicating that three-point shooting varies more significantly and may play a larger role in separating strong and weak offensive performances. The scatter plot of total points scored by game reveals that while most games fall within a typical scoring range, there are noticeable outlier games where teams score much higher than average. Together, these visuals suggest that offensive performance is driven by both efficiency (FG% and 3P%) and overall scoring output, and that variation in three-point accuracy and occasional high-scoring games may be key factors that influence team success.
@@ -215,7 +223,7 @@ The offensive statistics provide a clear picture of how teams scored throughout 
 The defensive statistics reveal meaningful differences in how teams disrupt their opponents throughout the season. The histogram of steals shows that while many games fall within a moderate range of defensive activity, some games feature significantly higher steal totals, suggesting that certain teams or matchups produce more aggressive turnover-oriented defense. The boxplot of blocks by game result indicates that winning games tend to involve slightly more blocks than losing games, though there is still some overlap between the two outcomes. The scatter plot of overall defensive pressure (steals + blocks) further shows how this combined measure fluctuates across games, with some contests showing consistently high levels of disruption and others showing much lower defensive activity. Taken together, these defensive visuals suggest that disruptive actions—particularly steals and blocks—vary more widely than offensive metrics and may play an important role in differentiating stronger defensive performances from weaker ones.
 
 
-## 4. T-Tests (Shafin)
+## 4. T-Tests
 
 ### 3-Point Percentage (Offensive Efficiency)
 
@@ -235,7 +243,7 @@ t_test_3p
 ```
 The first t-test compared the average 3-point shooting percentage between games teams won and games they lost. The results show a clear difference: winning teams shot an average of 0.387 from three, while losing teams averaged 0.331. The p-value (< 2.2e-16) shows this difference is statistically significant. This means teams that win tend to shoot much better from three than teams that lose, suggesting that 3-point efficiency is an important offensive factor connected to winning games.
 
-### Defensive Pressure (Steals + Blocks)
+### Defensive Pressure (Steals and Blocks)
 
 ### H0: There is no difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
 ### Ha: There is a difference in the average defensive pressure (steals + blocks) between games that teams win and games that teams lose.
@@ -255,7 +263,7 @@ The second t-test compared defensive pressure—defined as steals plus blocks—
 Overall Conclusion:
 Both t-tests show that offensive and defensive metrics differ significantly between wins and losses. Winning teams tend to shoot more efficiently from three and apply stronger defensive pressure. These findings support the research question by showing that specific team-level statistics—such as 3-point percentage and defensive pressure—are clearly associated with winning NBA games. While the t-tests do not reveal which statistic is the most important, they provide strong evidence that both offense and defense contribute to success.
 
-## 5. K-Clustering (Derek)
+## 5. K-Clustering
 ```{r, include = FALSE}
 set.seed(800) # keep clustering consistent
 head(team_season)
@@ -434,9 +442,9 @@ When looking at individual games, the trend is still there. When clustered into 
 
 
 
-## 6. Logistic Regression (Tiffany)
+## 6. Logistic Regression
 
-```{r echo = FALSE}
+```{r, echo = FALSE}
 # LOGISTIC REGRESSION MODEL
 # Convert results to binary outcome: 1 = Win, 0 = Loss
 team_game <- team_game %>%
@@ -471,8 +479,8 @@ Blocks (BLK) also have a notable positive effect at 0.176, p < 2e-11. Each block
 
 Points has a small significant coefficient at 0.0604, p < 2e-12. Each additional point increases the odds of winning by exp(0.0604) equal to 1.062. Although getting more points is obviously related to winning, its effect is reduced because shooting efficiency and other metrics already explain the scoring variety.
 
-## 7. Goodness of Fit Tests (Tiffany)
-```{r echo = FALSE}
+## 7. Goodness of Fit Tests
+```{r, echo = FALSE}
 # GOODNESS OF FIT TESTS FOR LOGISTIC REGRESSION
 #1. Likelihood Ratio Test (compare model vs null model)
 null_model <- glm(win_binary ~ 1, data = team_game, family = binomial)
@@ -513,7 +521,11 @@ The t tests reinforced these conclusions by showing that winning teams consisten
 Overall, our multi method approach demonstrates that shooting efficiency, especially field goal percentage, and defensive disruption through steals are the most influential factors in predicting wins during the 2024 25 NBA season. This suggests that NBA teams can improve their chances of winning by focusing on efficient shot selection and cultivating a defensive style that creates turnovers and limits opponent opportunities.
 
 **Team Contributions by individual:**
-- Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
-- Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
-- Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd
-- Tyler: Offensive and Defensive EDA/EDA Analysis
+
+Derek: Data cleaning, K-means clustering, Linear regression model, Clustering analysis, Conclusion
+
+Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
+
+Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd, formatting
+
+Tyler: Offensive and Defensive EDA/EDA Analysis
