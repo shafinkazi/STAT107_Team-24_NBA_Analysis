@@ -23,7 +23,7 @@ Using cleaned box score data transformed into team aggregates, we evaluate the e
 This analysis provides insights useful to coaches, analysts, and scouting teams seeking to optimize roster construction and during-game strategy in the data-driven era of the NBA.
 
 This report was made in conjunction with Derek De Gracia, Shafin Kazi, Tiffany Huang, Tyler Wong for STAT107 at UCR taught by Jose Sanchez Gomez. 
-The repository is hosted by Github under https://github.com/shafinkazi/STAT107-NBA-Project
+The repository is hosted by Github under https://github.com/shafinkazi/STAT107_Team-24_NBA_Analysis.git
 
 ## 1. Introduction
 The modern NBA is shaped heavily by analytics, efficiency, and data-driven decision-making. Teams increasingly rely on statistical insights to evaluate player performance, optimize game strategies, and gain competitive advantages. Among the many questions that arise in basketball analytics, one of the most fundamental is:
@@ -34,13 +34,14 @@ Although basketball is a team sport, game outcomes ultimately reflect patterns i
 
 In this project, we analyze all team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
 
-##Research Question
+## Research Question
 Which team-level offensive and defensive statistics are most strongly associated with winning NBA games in the 2024–25 season?
 
-##To answer this question, we apply multiple statistical tools, including:
+## Methods Overview
+To answer this question, we apply multiple statistical tools, including:
 - Two-sample t-tests to compare offense vs. defense metrics between wins and losses
 - K-means clustering to group team performance styles
-- Logistic regression to predicti game outcomes from key features by turning the variables into binary conditions of win or lose
+- Logistic regression to predict game outcomes from key features by turning the variables into binary conditions of win or lose
 
 This multi-method approach allows us to evaluate individual statistical differences, build predictive models, and examine broader team-performance patterns.
 
@@ -132,7 +133,7 @@ ggplot(team_game, aes(x = FG_pct)) +
   ) +
   theme_minimal()
 ```
-
+This Histogram plot shows how often different shooting percentages occur across games. Most games fall around a middle FG% range, with fewer games at very low or very high percentages.
 ```{r}
 # Boxplot: Three-Point Percentage (3P%)
 ggplot(team_game, aes(y = `3P_pct`)) +
@@ -143,7 +144,7 @@ ggplot(team_game, aes(y = `3P_pct`)) +
   ) +
   theme_minimal()
 ```
-
+This boxplot shows the spread and variability of three-point shooting. We can see how consistent or inconsistent teams are from beyond the arc, and whether there are games with unusually good or bad three-point shooting.
 ```{r}
 # Scatter Plot: Total Points Scored by Game
 ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
@@ -157,7 +158,7 @@ ggplot(team_game, aes(x = 1:nrow(team_game), y = points)) +
 
 
 ```
-
+This scatter plot shows how many points teams scored in each game across the season. It helps us see whether scoring is usually clustered in a typical range or if there are many high- or low-scoring outlier games.
 
 ```{r}
 #Defensive Statistics
@@ -172,6 +173,7 @@ ggplot( team_game, aes(x = STL)) +
   ) +
   theme_minimal()
 ```
+This histogram shows how many steals teams generate per game. It highlights whether most games have only a few steals or whether high-steal games are common.
 
 ```{r}
 # Boxplot of Blocks by Game Outcome
@@ -187,7 +189,7 @@ ggplot(team_game, aes(x = Res, y = BLK, fill = Res)) +
 
 
 ```
-
+This boxplot compares the distribution of blocks in wins versus losses. It lets us see if winning games tend to have more blocks than losing games.
 ```{r}
 # Scatter Plot: Defensive Pressure by Game
 ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
@@ -200,14 +202,15 @@ ggplot(team_game, aes(x = 1:nrow(team_game), y = defensive_pressure)) +
   theme_minimal()
 
 ```
+This scatter plot shows how combined defensive pressure changes from game to game. It helps visualize how often teams produce a lot of steals and blocks in the same game versus games with low defensive disruption.
 
 ## Exploratory Data Analysis write up
 
-# Offensive Statistics
-The three offensive statistics show how NBA teams scored during the 2024–25 season. The field-goal percentage plot shows that most teams shoot close to the league average, so there aren’t huge differences in basic shooting skill between teams. The three-point percentage boxplot shows more variation, which means some teams are really good at shooting threes while others aren’t as strong. The scatter plot of points scored by game shows that most teams score a normal amount of points, but a few teams score a lot more than everyone else. Looking closer, teams that score a lot usually have good shooters who can make both mid-range and long-range shots consistently. Teams that struggle in points often rely on fewer players for scoring, which can make them easier to defend. The data also shows that even teams with average shooting percentages can score a lot if they take more shots or get more free throws. Overall, these offensive charts show that making threes, scoring efficiently, and taking lots of good shots are the main things that separate strong offenses from average ones.
+### Offensive Statistics
+The offensive statistics provide a clear picture of how teams scored throughout the 2024–25 season. The histogram of field-goal percentage shows that most team-game performances cluster around a central range, meaning shooting efficiency tends to stay relatively consistent across games with fewer extreme highs or lows. In contrast, the boxplot of three-point percentage displays a wider spread, indicating that three-point shooting varies more significantly and may play a larger role in separating strong and weak offensive performances. The scatter plot of total points scored by game reveals that while most games fall within a typical scoring range, there are noticeable outlier games where teams score much higher than average. Together, these visuals suggest that offensive performance is driven by both efficiency (FG% and 3P%) and overall scoring output, and that variation in three-point accuracy and occasional high-scoring games may be key factors that influence team success.
 
-#Defensive Statistics
-The defensive statistics show clear differences in how NBA teams slow down their opponents. In the defensive pressure histogram (steals + blocks), most teams usually get between 6 and 12 combined steals and blocks per game, but a smaller group of teams regularly got 15 or more, showing they play much more aggressive defense. The steals histogram shows that some teams are strong at forcing turnovers by grabbing 8–10 steals per game, while others stay closer to 4–6 steals, meaning they play a less risky style. For example, The Atlanta Hawks had a lot of steals because they had a player named Dyson Daniels who lead the league in steals because he was always being agressive and attacking the ball. The blocks histogram also shows big differences: teams with good rim protectors often reach 6 or more blocks, while others usually stay below 3. For example, a team like the Spurs got a lot of blocks because they have a player in Victor wembanyama who led the whole NBA in blocks last season. Overall, these defensive charts show that defensive performance has more variation than offense, and teams that produce a lot of steals and blocks stand out the most on that side of the game. 
+### Defensive Statistics
+The defensive statistics reveal meaningful differences in how teams disrupt their opponents throughout the season. The histogram of steals shows that while many games fall within a moderate range of defensive activity, some games feature significantly higher steal totals, suggesting that certain teams or matchups produce more aggressive turnover-oriented defense. The boxplot of blocks by game result indicates that winning games tend to involve slightly more blocks than losing games, though there is still some overlap between the two outcomes. The scatter plot of overall defensive pressure (steals + blocks) further shows how this combined measure fluctuates across games, with some contests showing consistently high levels of disruption and others showing much lower defensive activity. Taken together, these defensive visuals suggest that disruptive actions—particularly steals and blocks—vary more widely than offensive metrics and may play an important role in differentiating stronger defensive performances from weaker ones.
 
 
 ## 4. T-Tests (Shafin)
@@ -485,20 +488,16 @@ Calibration quality was assessed using the Hosmer–Lemeshow test, which evaluat
 
 
 ## 8. Conclusion
-  - In terms of offense, your main goal should be to make your shots. While free throws and three pointers contribute to winning, the logistic regression model showed feild goal percentage was the most significant factor in terms of offense, as well as overall stats. It had the lowest p-value and was a strong indicator of whether or not a team would win a game.
-  - Of the defensive stats, steals were the highest contributor towards winning games. While stopping an opponents shot and lowering their feild goal percentage is important, stopping them before they get to the basket and ensuring a possession for your own team is much more beneficial.
-  - As shown by the k means clustering, you don't have to excel in everything to win a game. Many winning teams opted to emphasize either offense or defense rather than a rounded approach, which led to more victories last season.
-- In terms of offense, a team’s main goal should be to make its shots. While free throws and three-pointers both contribute to winning, the logistic regression model showed that field goal percentage was the most significant offensive factor, as well as one of the strongest overall predictors. It had one of the lowest p-values and was a strong indicator of whether or not a team would win a game.
+The results of our analysis show that both offensive and defensive performance play meaningful roles in determining whether an NBA team wins a game, but some statistics stand out as especially influential. On offense, field goal percentage emerged as the strongest predictor of winning. The logistic regression model showed that even small increases in shooting efficiency substantially raise a team's probability of winning, and this aligns with our exploratory data analysis, which showed that teams with more consistent shooting tend to score within a higher and more stable range. Three point percentage was also important, as supported by our t test, which found a significant difference in three point percentage between wins and losses. Although more variable than field goal percentage, strong three point shooting appears to separate top offensive performances from average ones.
 
-- Of the defensive stats, steals were the highest contributor toward winning games. While blocking shots and lowering an opponent’s field goal percentage is important, stopping them before they get to the basket and creating extra possessions for your own team through steals is even more beneficial.
+On the defensive side, steals were the most impactful statistic across our models. The logistic regression showed that each additional steal significantly increases the odds of winning, and teams in our clustering analysis that generated more steals tended to fall into higher performing clusters. Blocks also contributed positively, and our defensive exploratory data analysis showed that teams with more blocks per game often performed better and created stronger defensive disruption. Taken together, these findings indicate that teams that apply consistent defensive pressure, especially through steals and blocks, gain meaningful advantages during games.
 
-- The hypothesis tests support these findings by showing clear differences between wins and losses. Winning teams had significantly higher three-point percentages and generated more defensive pressure (steals + blocks) than losing teams. This means that both efficient shooting from beyond the arc and active defense are statistically associated with a higher chance of winning NBA games.
+The t tests reinforced these conclusions by showing that winning teams consistently had higher three point percentages and higher defensive pressure, measured through combined steals and blocks, compared to losing teams. Meanwhile, the k means clustering revealed that teams do not need to dominate every category to find success. Many winning teams specialized either in strong shooting or in disruptive defense, and both strategies were linked to higher win totals.
 
-- As shown by the k-means clustering, you don’t have to excel in every category to win. Many winning teams emphasized either strong shooting or disruptive defense rather than a perfectly balanced approach, and this specialization still led to more victories over the 2024–25 season.
- 
+Overall, our multi method approach demonstrates that shooting efficiency, especially field goal percentage, and defensive disruption through steals are the most influential factors in predicting wins during the 2024 25 NBA season. This suggests that NBA teams can improve their chances of winning by focusing on efficient shot selection and cultivating a defensive style that creates turnovers and limits opponent opportunities.
 
 Team Contributions by individual:
-Derek: Data cleaning, K means clustering, linear regression model, clustering analysis
-Shafin:
+Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
+Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
 Tiffany:
-Tyler:
+Tyler: Offensive and Defensive EDA/EDA Analysis
