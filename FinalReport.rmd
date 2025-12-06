@@ -6,14 +6,15 @@ output:
   html_document: default
   pdf_document: default
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
 
-```{r}
 source("00_requirements.R")
-search()
-
 ```
 Abstract:
 Analytics and data-driven metrics have transformed modern NBA strategy, influencing roster decisions, offensive schemes, and defensive priorities. While many statistics are tracked in every game, not all contribute equally to winning. This study examines which team-level offensive and defensive statistics are most strongly associated with winning NBA games during the 2024–25 season.
@@ -34,11 +35,12 @@ Although basketball is a team sport, game outcomes ultimately reflect patterns i
 
 In this project, we analyze all team statistics from the 2024–25 NBA season to identify how offensive skills (such as 3-point shooting, assists, and field-goal efficiency) and defensive skills (such as steals, blocks, and turnovers) relate to game outcomes. By transforming player-level game logs into team-level summaries, we can compare performances across wins and losses and study which metrics are most predictive of success.
 
-## Research Question
+### Research Question
 Which team-level offensive and defensive statistics are most strongly associated with winning NBA games in the 2024–25 season?
 
-## Methods Overview
+### Methods Overview
 To answer this question, we apply multiple statistical tools, including:
+- Exploratory Data Analysis
 - Two-sample t-tests to compare offense vs. defense metrics between wins and losses
 - K-means clustering to group team performance styles
 - Logistic regression to predict game outcomes from key features by turning the variables into binary conditions of win or lose
@@ -510,8 +512,8 @@ The t tests reinforced these conclusions by showing that winning teams consisten
 
 Overall, our multi method approach demonstrates that shooting efficiency, especially field goal percentage, and defensive disruption through steals are the most influential factors in predicting wins during the 2024 25 NBA season. This suggests that NBA teams can improve their chances of winning by focusing on efficient shot selection and cultivating a defensive style that creates turnovers and limits opponent opportunities.
 
-Team Contributions by individual:
-Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
-Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
-Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd
-Tyler: Offensive and Defensive EDA/EDA Analysis
+**Team Contributions by individual:**
+- Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
+- Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
+- Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd
+- Tyler: Offensive and Defensive EDA/EDA Analysis
