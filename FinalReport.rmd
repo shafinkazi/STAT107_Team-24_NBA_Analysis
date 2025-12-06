@@ -499,5 +499,5 @@ Overall, our multi method approach demonstrates that shooting efficiency, especi
 Team Contributions by individual:
 Derek: Data cleaning, K means clustering, linear regression model, clustering analysis, Conclusion
 Shafin: File Template, Introduction, Source file setup, Data cleaning, T-Test and analysis, Readme.rmd, Conclusion
-Tiffany:
+Tiffany: Abstract, Introduction, Logistic regression and analysis, Goodness of Fit tests and analysis, Data cleaning, Readme.rmd
 Tyler: Offensive and Defensive EDA/EDA Analysis
