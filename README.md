@@ -42,7 +42,8 @@ This is the complete final project report. It contains the introduction, data de
 This is the midway report submitted earlier in the quarter. It is no longer used for the final analysis but is included for reference.
 
 **STAT 107 Final Project: NBA Team Statistics and Winning.pdf**
-This is our report in a PDF.
+This is our final report.
+
 ---
 
 # How to Reproduce the Analysis  
